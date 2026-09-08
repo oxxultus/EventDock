@@ -44,7 +44,7 @@ eventdock:
     mode: inbox
 ```
 
-두 값을 독립적으로 변경할 수 있습니다. 0.1.x 설정 호환성을 위해 consumer ID, topic 및 처리 활성화 설정은 계속 `eventdock.inbox` 아래에 둡니다.
+기존 단일 listener에서는 두 값을 독립적으로 변경합니다. 다중 listener에서는 `eventdock.consumers`의 각 항목이 모드, topic, Kafka group 및 선택적인 eventType route를 가집니다. [다중 consumer binding](../spring-boot/multi-consumers.ko.md)을 확인합니다.
 
 ## 애플리케이션 계약
 

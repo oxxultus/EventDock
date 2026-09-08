@@ -3,6 +3,7 @@ package io.github.oxxultus.eventdock.autoconfigure;
 import static org.mockito.Mockito.mock;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.oxxultus.eventdock.core.UnitOfWork;
 import io.github.oxxultus.eventdock.core.DirectEventWriter;
@@ -71,6 +72,35 @@ class EventDockAutoConfigurationTest {
                 });
       }
     }
+  }
+
+  @Test
+  void createsMultipleConsumerGroupsWithMixedModes() {
+    runner
+        .withUserConfiguration(Handlers.class)
+        .withPropertyValues(
+            "spring.kafka.listener.auto-startup=false",
+            "eventdock.consumers[0].id=member-events",
+            "eventdock.consumers[0].mode=inbox",
+            "eventdock.consumers[0].topics=member.created,member.updated",
+            "eventdock.consumers[0].kafka.group-id=core-order-member-events",
+            "eventdock.consumers[0].routes[0].event-type=member.created",
+            "eventdock.consumers[0].routes[0].consumer-id=core-order-member-created",
+            "eventdock.consumers[1].id=notifications",
+            "eventdock.consumers[1].mode=direct",
+            "eventdock.consumers[1].topics=order.created",
+            "eventdock.consumers[1].kafka.group-id=notification-events")
+        .run(
+            context -> {
+              var manager = context.getBean(EventDockKafkaConsumerManager.class);
+              assertEquals(2, manager.containers().size());
+              assertEquals(
+                  "core-order-member-events",
+                  manager.containers().get(0).getContainerProperties().getGroupId());
+              assertEquals(
+                  "notification-events",
+                  manager.containers().get(1).getContainerProperties().getGroupId());
+            });
   }
 
   @Configuration(proxyBeanMethods = false)

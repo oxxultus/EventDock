@@ -54,6 +54,8 @@ eventdock:
 
 기본 Kafka topic 이름은 이벤트 타입입니다. Kafka의 topic 자동 생성이 꺼져 있다면 서비스를 시작하기 전에 설정한 topic을 생성합니다.
 
+이 설정은 기존 단일 listener 방식입니다. listener가 여러 개인 애플리케이션은 Kafka `group-id`와 EventDock `consumer-id`를 분리하고 eventType route를 지원하는 [다중 consumer binding](../spring-boot/multi-consumers.ko.md)을 사용합니다.
+
 ## 3. 도메인 트랜잭션에서 이벤트 발행
 
 도메인 데이터 저장과 이벤트 추가를 하나의 Spring 트랜잭션에서 실행합니다. rollback되면 두 변경이 함께 취소됩니다.
@@ -143,6 +145,7 @@ Inbox 처리와 handler의 데이터베이스 변경은 하나의 트랜잭션�
 
 - [4가지 신뢰성 모드 구현 가이드](../reliability/modes.ko.md)
 - [Spring Boot Starter](../spring-boot/starter.ko.md)
+- [다중 consumer binding](../spring-boot/multi-consumers.ko.md)
 - [PostgreSQL 저장소](../storage/postgresql.ko.md)
 - [Kafka 전송](../transport/kafka.ko.md)
 - [아키텍처](../architecture/architecture.ko.md)

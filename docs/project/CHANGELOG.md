@@ -10,6 +10,7 @@ The format follows Keep a Changelog, and this project follows Semantic Versionin
 
 ### Added
 
+- Multiple Kafka consumer bindings with independent group IDs, modes, topics, and event-type consumer routes.
 - Complete English and Korean implementation guides for all four reliability-mode combinations.
 
 ## [0.2.0] - 2026-09-08
