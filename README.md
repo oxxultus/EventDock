@@ -4,6 +4,12 @@
 
 Framework-independent event, transactional outbox, and idempotent inbox building blocks.
 
+## Quick start
+
+Publish EventDock locally, add `eventdock-spring-boot-starter`, configure PostgreSQL and Kafka, then append an `EventEnvelope` through `OutboxWriter` inside the same transaction as the domain change.
+
+See the complete [usage guide](docs/getting-started/usage.md) or [한국어 사용 가이드](docs/getting-started/usage.ko.md).
+
 ## Modules
 
 - `eventdock-core`: event envelope and transport-neutral contracts
@@ -27,6 +33,7 @@ Framework-independent processing, PostgreSQL storage, Kafka transport, and Sprin
 
 ## Documentation
 
+- [Usage guide](docs/getting-started/usage.md)
 - [System design](docs/design/system-design.md)
 - [Architecture](docs/architecture/architecture.md)
 - [PostgreSQL storage](docs/storage/postgresql.md)

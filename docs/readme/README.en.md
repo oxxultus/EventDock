@@ -4,6 +4,10 @@
 
 Framework-independent event, transactional outbox, and idempotent inbox building blocks.
 
+## Quick start
+
+Use the [usage guide](../getting-started/usage.md) to install the starter, configure PostgreSQL and Kafka, publish an event transactionally, and register an Inbox handler.
+
 ## Modules
 
 - `eventdock-core`: event envelope and transport-neutral contracts
@@ -27,6 +31,7 @@ Framework-independent processing, PostgreSQL storage, Kafka transport, and Sprin
 
 ## Documentation
 
+- [Usage guide](../getting-started/usage.md)
 - [System design](../design/system-design.md)
 - [Architecture](../architecture/architecture.md)
 - [PostgreSQL storage](../storage/postgresql.md)
