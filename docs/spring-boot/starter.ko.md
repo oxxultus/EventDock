@@ -16,6 +16,10 @@ Starter는 애플리케이션의 `DataSource`, `PlatformTransactionManager`, `Ob
 eventdock:
   initialize-schema: true
   publish-timeout: 10s
+  producer:
+    mode: outbox
+  consumer:
+    mode: inbox
   retry:
     max-attempts: 5
     initial-delay: 1s
@@ -40,7 +44,7 @@ eventdock:
 
 ```
 
-Inbox 수신과 처리를 활성화하려면 `InboxHandlerRegistry` bean을 선언합니다. 도메인 변경과 동일한 애플리케이션 트랜잭션 안에서 `OutboxWriter`로 `EventEnvelope`를 추가합니다. Transaction-aware DataSource를 사용하므로 두 변경은 함께 commit되거나 rollback됩니다.
+Inbox 수신과 처리를 활성화하려면 `InboxHandlerRegistry` bean을 선언합니다. 설정으로 Outbox 또는 Direct 발행을 선택하려면 `EventWriter`를 주입합니다. 기본 Outbox Writer는 도메인 트랜잭션에 참여하므로 두 변경은 함께 commit되거나 rollback됩니다. 자세한 내용은 [신뢰성 모드](../reliability/modes.ko.md)를 확인합니다.
 
 Starter는 byte-array 전용 Kafka producer 및 consumer factory를 생성합니다. 애플리케이션의 기존 `KafkaTemplate`과 JSON listener factory는 변경하지 않습니다.
 

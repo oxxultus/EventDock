@@ -1,7 +1,11 @@
 package io.github.oxxultus.eventdock.autoconfigure;
 
 import io.github.oxxultus.eventdock.core.EventCodec;
+import io.github.oxxultus.eventdock.core.DirectEventProcessor;
+import io.github.oxxultus.eventdock.core.DirectEventWriter;
+import io.github.oxxultus.eventdock.core.EventHandlerRegistry;
 import io.github.oxxultus.eventdock.core.EventPublisher;
+import io.github.oxxultus.eventdock.core.EventWriter;
 import io.github.oxxultus.eventdock.core.ExponentialBackoffRetryPolicy;
 import io.github.oxxultus.eventdock.core.RetryPolicy;
 import io.github.oxxultus.eventdock.core.UnitOfWork;
@@ -19,6 +23,7 @@ import io.github.oxxultus.eventdock.outbox.OutboxCleanupRepository;
 import io.github.oxxultus.eventdock.storage.postgresql.PostgresqlStorage;
 import io.github.oxxultus.eventdock.transport.kafka.KafkaEventPublisher;
 import io.github.oxxultus.eventdock.transport.kafka.KafkaEventRecordMapper;
+import io.github.oxxultus.eventdock.transport.kafka.KafkaDirectReceiver;
 import io.github.oxxultus.eventdock.transport.kafka.KafkaInboxReceiver;
 import io.github.oxxultus.eventdock.transport.kafka.KafkaSender;
 import io.github.oxxultus.eventdock.transport.kafka.KafkaTopicResolver;
@@ -33,6 +38,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
@@ -193,6 +199,13 @@ public class EventDockAutoConfiguration {
     EventPublisher eventDockEventPublisher(KafkaEventRecordMapper mapper, KafkaSender sender) {
       return new KafkaEventPublisher(mapper, sender);
     }
+
+    @Bean
+    @Primary
+    @ConditionalOnProperty(name = "eventdock.producer.mode", havingValue = "direct")
+    EventWriter eventDockDirectEventWriter(EventCodec codec, EventPublisher publisher) {
+      return new DirectEventWriter(codec, publisher);
+    }
   }
 
   @Bean
@@ -238,6 +251,10 @@ public class EventDockAutoConfiguration {
   @EnableKafka
   @ConditionalOnBean(InboxHandlerRegistry.class)
   @ConditionalOnProperty(name = {"eventdock.inbox.consumer-id", "eventdock.inbox.topics"})
+  @ConditionalOnProperty(
+      name = "eventdock.consumer.mode",
+      havingValue = "inbox",
+      matchIfMissing = true)
   static class InboxConfiguration {
     @Bean
     ConcurrentKafkaListenerContainerFactory<String, byte[]>
@@ -255,9 +272,9 @@ public class EventDockAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     InboxProcessor eventDockInboxProcessor(
-        InboxRepository repository,
+        @Qualifier("eventDockInboxRepository") InboxRepository repository,
         InboxHandlerRegistry handlers,
-        AggregateVersionRepository versions,
+        @Qualifier("eventDockAggregateVersionRepository") AggregateVersionRepository versions,
         RetryPolicy retry,
         Clock clock,
         UnitOfWork unitOfWork,
@@ -276,7 +293,7 @@ public class EventDockAutoConfiguration {
     KafkaInboxReceiver eventDockKafkaInboxReceiver(
         EventDockProperties properties,
         KafkaEventRecordMapper mapper,
-        InboxRepository repository,
+        @Qualifier("eventDockInboxRepository") InboxRepository repository,
         Clock clock) {
       return new KafkaInboxReceiver(
           properties.getInbox().getConsumerId(), mapper, repository, clock);
@@ -295,6 +312,51 @@ public class EventDockAutoConfiguration {
     EventDockInboxScheduler eventDockInboxScheduler(
         InboxProcessor processor, EventDockProperties properties, EventDockMetrics metrics) {
       return new EventDockInboxScheduler(processor, properties, metrics);
+    }
+  }
+
+  @Configuration(proxyBeanMethods = false)
+  @EnableKafka
+  @ConditionalOnBean(EventHandlerRegistry.class)
+  @ConditionalOnProperty(name = {"eventdock.inbox.consumer-id", "eventdock.inbox.topics"})
+  @ConditionalOnProperty(
+      name = "eventdock.inbox.enabled",
+      havingValue = "true",
+      matchIfMissing = true)
+  @ConditionalOnProperty(name = "eventdock.consumer.mode", havingValue = "direct")
+  static class DirectConsumerConfiguration {
+    @Bean
+    ConcurrentKafkaListenerContainerFactory<String, byte[]>
+        eventDockKafkaListenerContainerFactory(KafkaProperties properties) {
+      var consumerFactory =
+          new DefaultKafkaConsumerFactory<>(
+              properties.buildConsumerProperties(),
+              new StringDeserializer(),
+              new ByteArrayDeserializer());
+      var factory = new ConcurrentKafkaListenerContainerFactory<String, byte[]>();
+      factory.setConsumerFactory(consumerFactory);
+      return factory;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    DirectEventProcessor eventDockDirectEventProcessor(
+        EventHandlerRegistry handlers, UnitOfWork unitOfWork) {
+      return new DirectEventProcessor(handlers, unitOfWork);
+    }
+
+    @Bean
+    KafkaDirectReceiver eventDockKafkaDirectReceiver(
+        EventDockProperties properties,
+        KafkaEventRecordMapper mapper,
+        DirectEventProcessor processor) {
+      return new KafkaDirectReceiver(
+          properties.getInbox().getConsumerId(), mapper, processor);
+    }
+
+    @Bean
+    EventDockKafkaDirectListener eventDockKafkaDirectListener(KafkaDirectReceiver receiver) {
+      return new EventDockKafkaDirectListener(receiver);
     }
   }
 }

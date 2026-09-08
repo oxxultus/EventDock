@@ -62,7 +62,7 @@ Create the domain data and append its event in one Spring transaction. A rollbac
 import io.github.oxxultus.eventdock.core.AggregateRef;
 import io.github.oxxultus.eventdock.core.EventEnvelope;
 import io.github.oxxultus.eventdock.core.EventId;
-import io.github.oxxultus.eventdock.outbox.OutboxWriter;
+import io.github.oxxultus.eventdock.core.EventWriter;
 import java.time.Instant;
 import java.util.Map;
 import org.springframework.stereotype.Service;
@@ -73,18 +73,18 @@ record OrderCreated(long orderId, long memberId) {}
 @Service
 class OrderService {
   private final OrderRepository orders;
-  private final OutboxWriter outbox;
+  private final EventWriter events;
 
-  OrderService(OrderRepository orders, OutboxWriter outbox) {
+  OrderService(OrderRepository orders, EventWriter events) {
     this.orders = orders;
-    this.outbox = outbox;
+    this.events = events;
   }
 
   @Transactional
   void create(long orderId, long memberId) {
     orders.save(new Order(orderId, memberId));
 
-    outbox.append(new EventEnvelope<>(
+    events.write(new EventEnvelope<>(
         EventId.random(),
         "order.created",
         1,
@@ -96,7 +96,7 @@ class OrderService {
 }
 ```
 
-EventDock stores the event in the Outbox table, publishes it asynchronously, and records completion or retry state. Do not send the Kafka message directly from the domain transaction.
+With the default `OUTBOX` producer mode, EventDock stores the event in the Outbox table, publishes it asynchronously, and records completion or retry state. Changing `eventdock.producer.mode` to `DIRECT` keeps this application code unchanged.
 
 ## 4. Register an Inbox handler
 

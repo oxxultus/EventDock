@@ -62,7 +62,7 @@ eventdock:
 import io.github.oxxultus.eventdock.core.AggregateRef;
 import io.github.oxxultus.eventdock.core.EventEnvelope;
 import io.github.oxxultus.eventdock.core.EventId;
-import io.github.oxxultus.eventdock.outbox.OutboxWriter;
+import io.github.oxxultus.eventdock.core.EventWriter;
 import java.time.Instant;
 import java.util.Map;
 import org.springframework.stereotype.Service;
@@ -73,18 +73,18 @@ record OrderCreated(long orderId, long memberId) {}
 @Service
 class OrderService {
   private final OrderRepository orders;
-  private final OutboxWriter outbox;
+  private final EventWriter events;
 
-  OrderService(OrderRepository orders, OutboxWriter outbox) {
+  OrderService(OrderRepository orders, EventWriter events) {
     this.orders = orders;
-    this.outbox = outbox;
+    this.events = events;
   }
 
   @Transactional
   void create(long orderId, long memberId) {
     orders.save(new Order(orderId, memberId));
 
-    outbox.append(new EventEnvelope<>(
+    events.write(new EventEnvelope<>(
         EventId.random(),
         "order.created",
         1,
@@ -96,7 +96,7 @@ class OrderService {
 }
 ```
 
-EventDock은 이벤트를 Outbox 테이블에 저장하고 비동기로 발행한 뒤 완료 또는 재시도 상태를 기록합니다. 도메인 트랜잭션에서 Kafka 메시지를 직접 전송하지 않습니다.
+기본 `OUTBOX` 생산 모드에서는 EventDock이 이벤트를 Outbox 테이블에 저장하고 비동기로 발행한 뒤 완료 또는 재시도 상태를 기록합니다. `eventdock.producer.mode`를 `DIRECT`로 바꿔도 애플리케이션 코드는 그대로 유지됩니다.
 
 ## 4. Inbox handler 등록
 

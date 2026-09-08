@@ -1,5 +1,7 @@
 package io.github.oxxultus.eventdock.autoconfigure;
 
+import io.github.oxxultus.eventdock.core.ConsumerMode;
+import io.github.oxxultus.eventdock.core.ProducerMode;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +11,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class EventDockProperties {
   private final Processing outbox = new Processing();
   private final Inbox inbox = new Inbox();
+  private final Producer producer = new Producer();
+  private final Consumer consumer = new Consumer();
   private final Retry retry = new Retry();
   private final Cleanup cleanup = new Cleanup();
   private Duration publishTimeout = Duration.ofSeconds(10);
 
   public Processing getOutbox() { return outbox; }
   public Inbox getInbox() { return inbox; }
+  public Producer getProducer() { return producer; }
+  public Consumer getConsumer() { return consumer; }
   public Retry getRetry() { return retry; }
   public Cleanup getCleanup() { return cleanup; }
   public Duration getPublishTimeout() { return publishTimeout; }
@@ -31,6 +37,20 @@ public class EventDockProperties {
     public void setBatchSize(int value) { batchSize = value; }
     public Duration getPollInterval() { return pollInterval; }
     public void setPollInterval(Duration value) { pollInterval = value; }
+  }
+
+  public static final class Producer {
+    private ProducerMode mode = ProducerMode.OUTBOX;
+
+    public ProducerMode getMode() { return mode; }
+    public void setMode(ProducerMode value) { mode = value; }
+  }
+
+  public static final class Consumer {
+    private ConsumerMode mode = ConsumerMode.INBOX;
+
+    public ConsumerMode getMode() { return mode; }
+    public void setMode(ConsumerMode value) { mode = value; }
   }
 
   public static final class Inbox extends Processing {
@@ -83,6 +103,12 @@ public class EventDockProperties {
   }
 
   public void validate() {
+    if (producer.getMode() == null) {
+      throw new IllegalStateException("eventdock.producer.mode must not be null");
+    }
+    if (consumer.getMode() == null) {
+      throw new IllegalStateException("eventdock.consumer.mode must not be null");
+    }
     positive("publish-timeout", publishTimeout);
     positive("outbox.batch-size", outbox.getBatchSize());
     positive("outbox.poll-interval", outbox.getPollInterval());
