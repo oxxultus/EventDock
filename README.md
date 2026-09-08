@@ -6,7 +6,7 @@ Framework-independent event, transactional outbox, and idempotent inbox building
 
 ## Quick start
 
-Add `io.github.oxxultus:eventdock-spring-boot-starter:0.1.0` from Maven Central, configure PostgreSQL and Kafka, then append an `EventEnvelope` through `OutboxWriter` inside the same transaction as the domain change.
+Add `io.github.oxxultus:eventdock-spring-boot-starter:0.1.0` from Maven Central, configure PostgreSQL and Kafka, then write an `EventEnvelope` through `EventWriter`. Producer and consumer reliability modes are independently configurable.
 
 See the complete [usage guide](docs/getting-started/usage.md) or [한국어 사용 가이드](docs/getting-started/usage.ko.md).
 
@@ -34,6 +34,7 @@ Framework-independent processing, PostgreSQL storage, Kafka transport, and Sprin
 ## Documentation
 
 - [Usage guide](docs/getting-started/usage.md)
+- [Reliability modes](docs/reliability/modes.md)
 - [Maven Central release](docs/releasing/maven-central.md)
 - [System design](docs/design/system-design.md)
 - [Architecture](docs/architecture/architecture.md)

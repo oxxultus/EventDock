@@ -8,6 +8,10 @@ The format follows Keep a Changelog, and this project follows Semantic Versionin
 
 ## [Unreleased]
 
+### Added
+
+- Independent `OUTBOX`/`DIRECT` producer and `INBOX`/`DIRECT` consumer reliability modes.
+
 ## [0.1.0] - 2026-09-08
 
 ### Added

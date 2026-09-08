@@ -16,6 +16,10 @@ The starter uses the application's `DataSource`, `PlatformTransactionManager`, `
 eventdock:
   initialize-schema: true
   publish-timeout: 10s
+  producer:
+    mode: outbox
+  consumer:
+    mode: inbox
   retry:
     max-attempts: 5
     initial-delay: 1s
@@ -40,7 +44,7 @@ eventdock:
 
 ```
 
-Declare an `InboxHandlerRegistry` bean to enable inbox listening and processing. Append an `EventEnvelope` with `OutboxWriter` inside the same application transaction as the domain change. The transaction-aware data source makes both writes commit or roll back together.
+Declare an `InboxHandlerRegistry` bean to enable inbox listening and processing. Inject `EventWriter` to select Outbox or Direct publication through configuration. The default Outbox writer joins the domain transaction, so both changes commit or roll back together. See [reliability modes](../reliability/modes.md).
 
 The starter creates dedicated byte-array Kafka producer and consumer factories. Existing application `KafkaTemplate` and JSON listener factories remain unchanged.
 
