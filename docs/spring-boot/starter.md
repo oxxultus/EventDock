@@ -31,6 +31,12 @@ eventdock:
     topics: order.created,order.status-changed
     batch-size: 100
     poll-interval: 1s
+  cleanup:
+    enabled: true
+    interval: 1h
+    outbox-retention: 7d
+    inbox-retention: 30d
+    batch-size: 1000
 
 ```
 
@@ -39,3 +45,7 @@ Declare an `InboxHandlerRegistry` bean to enable inbox listening and processing.
 The starter creates dedicated byte-array Kafka producer and consumer factories. Existing application `KafkaTemplate` and JSON listener factories remain unchanged.
 
 Schema initialization defaults to enabled and executes idempotent DDL. Set `eventdock.initialize-schema=false` when Flyway or another deployment process applies `META-INF/eventdock/postgresql/V1__eventdock_schema.sql`.
+
+Invalid durations, batch sizes, retry ranges, or enabled Inbox settings fail application startup. If Micrometer is present, EventDock records outcome counters. If Spring Boot Health is present, `eventDockHealthIndicator` reports pending and failed Outbox/Inbox counts.
+
+Declare custom `OutboxExhaustionHandler` and `InboxExhaustionHandler` beans to publish DLQ records or page operators. The persisted `FAILED` row remains the source of truth even if the operational callback fails.

@@ -31,6 +31,12 @@ eventdock:
     topics: order.created,order.status-changed
     batch-size: 100
     poll-interval: 1s
+  cleanup:
+    enabled: true
+    interval: 1h
+    outbox-retention: 7d
+    inbox-retention: 30d
+    batch-size: 1000
 
 ```
 
@@ -39,3 +45,7 @@ Inbox 수신과 처리를 활성화하려면 `InboxHandlerRegistry` bean을 선�
 Starter는 byte-array 전용 Kafka producer 및 consumer factory를 생성합니다. 애플리케이션의 기존 `KafkaTemplate`과 JSON listener factory는 변경하지 않습니다.
 
 Schema 초기화는 기본적으로 활성화되며 멱등 DDL을 실행합니다. Flyway 등 배포 과정에서 `META-INF/eventdock/postgresql/V1__eventdock_schema.sql`을 적용한다면 `eventdock.initialize-schema=false`로 설정합니다.
+
+잘못된 duration, batch size, retry 범위 또는 활성화된 Inbox 설정은 애플리케이션 시작을 실패시킵니다. Micrometer가 있으면 EventDock이 처리 결과 counter를 기록합니다. Spring Boot Health가 있으면 `eventDockHealthIndicator`가 Outbox·Inbox 대기 및 실패 건수를 제공합니다.
+
+DLQ 발행이나 운영자 호출이 필요하면 `OutboxExhaustionHandler`, `InboxExhaustionHandler` bean을 구현합니다. 운영 callback이 실패해도 저장된 `FAILED` row가 기준 데이터로 유지됩니다.
