@@ -13,6 +13,8 @@ public interface InboxRepository {
 
   void markProcessed(String consumerId, EventId eventId, Instant processedAt);
 
+  void markSkipped(String consumerId, EventId eventId, String reason, Instant processedAt);
+
   void recordFailure(
       String consumerId, EventId eventId, String reason, Instant nextAttemptAt, boolean exhausted);
 }

@@ -1,4 +1,4 @@
-package io.github.oxxultus.eventdock.outbox;
+package io.github.oxxultus.eventdock.core;
 
 import java.time.Duration;
 

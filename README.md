@@ -23,7 +23,7 @@ Dependencies point inward: framework and technology adapters depend on core modu
 - Kafka
 - Spring Boot 4.1
 
-The project is an API-first scaffold. Storage SQL, transaction integration, Kafka mapping, auto-configuration, migrations, and production tests will be implemented incrementally.
+Framework-independent outbox and inbox processing is implemented. PostgreSQL storage, Kafka mapping, auto-configuration, migrations, and production integration tests remain under active development.
 
 ## Documentation
 
