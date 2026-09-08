@@ -1,5 +1,7 @@
 # EventDock contribution conventions
 
+[English](CONTRIBUTING.md) | [한국어](CONTRIBUTING.ko.md)
+
 ## Architecture
 
 - Dependencies must point inward: framework/technology adapters → feature core → `eventdock-core`.
