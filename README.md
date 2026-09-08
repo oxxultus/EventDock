@@ -6,7 +6,7 @@ Framework-independent event, transactional outbox, and idempotent inbox building
 
 ## Quick start
 
-Publish EventDock locally, add `eventdock-spring-boot-starter`, configure PostgreSQL and Kafka, then append an `EventEnvelope` through `OutboxWriter` inside the same transaction as the domain change.
+Add `io.github.oxxultus:eventdock-spring-boot-starter:0.1.0` from Maven Central, configure PostgreSQL and Kafka, then append an `EventEnvelope` through `OutboxWriter` inside the same transaction as the domain change.
 
 See the complete [usage guide](docs/getting-started/usage.md) or [한국어 사용 가이드](docs/getting-started/usage.ko.md).
 

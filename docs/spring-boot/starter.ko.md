@@ -5,10 +5,10 @@
 다음 의존성 하나를 추가합니다.
 
 ```gradle
-implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.1.0-SNAPSHOT'
+implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.1.0'
 ```
 
-로컬 개발에서는 EventDock에서 `./gradlew publishToMavenLocal`을 실행하고 사용하는 프로젝트의 repository에 `mavenLocal()`을 추가합니다.
+Artifact는 Maven Central에서 사용할 수 있습니다. 아직 배포하지 않은 source checkout을 시험하려면 EventDock에서 `./gradlew publishToMavenLocal`을 실행하고 사용하는 프로젝트의 `mavenCentral()` 앞에 `mavenLocal()`을 임시로 추가합니다.
 
 Starter는 애플리케이션의 `DataSource`, `PlatformTransactionManager`, `ObjectMapper` 및 `KafkaTemplate`을 사용합니다. PostgreSQL repository, transaction-aware Unit of Work, JSON codec, Kafka publisher, Inbox receiver 및 주기 실행 processor를 자동설정합니다. 동일한 contract의 애플리케이션 bean을 선언하면 각 bean을 교체할 수 있습니다.
 

@@ -19,7 +19,7 @@
 
 ## 단계적 교체
 
-1. EventDock `0.1.0-SNAPSHOT`을 Maven Local에 배포하고 한 서비스에 starter를 추가합니다.
+1. Maven Central의 EventDock `0.1.0`과 Starter를 한 서비스에 적용합니다.
 2. EventDock schema를 적용하고 해당 서비스에서만 기존 Outbox/Inbox 자동설정을 비활성화합니다.
 3. 위험이 낮은 이벤트를 선정하고 전환 중에는 새 topic을 사용합니다.
 4. 기존 `@Transactional` use case 안의 writer를 `OutboxWriter.append(EventEnvelope<?>)`로 교체합니다.
