@@ -1,5 +1,7 @@
 # Architecture
 
+[English](architecture.md) | [한국어](architecture.ko.md)
+
 ## Dependency rule
 
 Core modules contain policy and ports. Technology modules implement those ports. Framework modules only assemble and manage implementations.
