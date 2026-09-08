@@ -23,11 +23,12 @@ Dependencies point inward: framework and technology adapters depend on core modu
 - Kafka
 - Spring Boot 4.1
 
-Framework-independent outbox and inbox processing is implemented. PostgreSQL storage, Kafka mapping, auto-configuration, migrations, and production integration tests remain under active development.
+Framework-independent outbox and inbox processing and PostgreSQL storage are implemented. Kafka mapping, auto-configuration, and production hardening remain under active development.
 
 ## Documentation
 
 - [System design](../design/system-design.md)
 - [Architecture](../architecture/architecture.md)
+- [PostgreSQL storage](../storage/postgresql.md)
 - [Contribution conventions](../../CONTRIBUTING.md)
 - [Changelog](../project/CHANGELOG.md)
