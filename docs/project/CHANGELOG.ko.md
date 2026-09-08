@@ -14,3 +14,4 @@ EventDock의 주요 변경 사항을 이 파일에 기록합니다.
 - 아키텍처, 처리 흐름 및 생명주기 다이어그램을 포함한 영문·한국어 시스템 설계 문서를 추가했습니다.
 - 재시도, 재시도 소진, 멱등성 및 latest-wins 순서 정책을 지원하는 프레임워크 독립적인 Outbox·Inbox Processor를 추가했습니다.
 - Core 모듈 외부에서 트랜잭션을 제어하기 위한 Unit of Work port를 추가했습니다.
+- JDBC 기반 PostgreSQL Outbox, Inbox, Aggregate Version, 마이그레이션 및 정리 기능을 추가했습니다.

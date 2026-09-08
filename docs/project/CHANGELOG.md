@@ -14,3 +14,4 @@ The format follows Keep a Changelog, and this project follows Semantic Versionin
 - English and Korean system design documents with architecture, processing, and lifecycle diagrams.
 - Framework-independent outbox and inbox processors with retry, exhaustion, idempotency, and latest-wins ordering policies.
 - A unit-of-work port that keeps transaction control outside core modules.
+- JDBC-based PostgreSQL outbox, inbox, aggregate-version, migration, and cleanup support.

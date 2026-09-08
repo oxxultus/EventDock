@@ -23,11 +23,12 @@
 - Kafka
 - Spring Boot 4.1
 
-프레임워크 독립적인 Outbox 및 Inbox 처리를 구현했습니다. PostgreSQL 저장소, Kafka 메시지 변환, 자동설정, 마이그레이션 및 운영 통합 테스트는 계속 개발합니다.
+프레임워크 독립적인 Outbox·Inbox 처리와 PostgreSQL 저장소를 구현했습니다. Kafka 메시지 변환, 자동설정 및 운영 고도화는 계속 개발합니다.
 
 ## 문서
 
 - [시스템 설계](../design/system-design.ko.md)
 - [아키텍처](../architecture/architecture.ko.md)
+- [PostgreSQL 저장소](../storage/postgresql.ko.md)
 - [기여 컨벤션](../project/CONTRIBUTING.ko.md)
 - [변경 이력](../project/CHANGELOG.ko.md)
