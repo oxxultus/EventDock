@@ -5,7 +5,7 @@
 Add one dependency:
 
 ```gradle
-implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.3.0'
+implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.4.0'
 ```
 
 The artifact is available from Maven Central. For an unreleased source checkout, run `./gradlew publishToMavenLocal` in EventDock and temporarily add `mavenLocal()` before `mavenCentral()` in the consuming build.
