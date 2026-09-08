@@ -189,7 +189,7 @@ Replay is an explicit administrative action. It must preserve the event ID, reco
 - Kafka transport publishes `SerializedEvent` with aggregate identity as the default key.
 - JSON support is implemented as a separate codec rather than embedded in core.
 - Spring Boot auto-configuration backs off when the application provides a port implementation.
-- Database migrations are versioned resources and are never applied silently by core modules.
+- Database migrations are versioned resources. The starter applies idempotent DDL by default and supports external migration ownership.
 
 ## 13. Open decisions
 
@@ -197,7 +197,6 @@ Replay is an explicit administrative action. It must preserve the event ID, reco
 - Strict-order behavior when an aggregate version gap is detected
 - Retry backoff defaults and maximum error retention
 - PostgreSQL table and schema naming customization
-- Whether `0.1.0` ships JSON codec as a separate module or through the starter
 - Public replay and operational management API boundaries
 
 These decisions must be resolved before the relevant adapter is considered stable.

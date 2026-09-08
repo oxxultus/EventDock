@@ -13,5 +13,7 @@ dependencies {
     api project(':eventdock-spring-boot-autoconfigure')
     api project(':eventdock-storage-postgresql')
     api project(':eventdock-transport-kafka')
-    api 'org.springframework.boot:spring-boot-starter'
+    api 'org.springframework.boot:spring-boot-starter-jdbc'
+    api 'org.springframework.boot:spring-boot-starter-kafka'
+    runtimeOnly 'org.postgresql:postgresql'
 }
