@@ -11,26 +11,19 @@ This guide uses the Spring Boot starter. For framework-independent integration, 
 - PostgreSQL
 - Kafka
 
-EventDock has not been released to Maven Central yet. Publish the current checkout to Maven Local first:
-
-```shell
-./gradlew publishToMavenLocal
-```
-
-Add Maven Local and the starter to the consuming application:
+Add Maven Central and the starter to the consuming application:
 
 ```gradle
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
-    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.1.0-SNAPSHOT'
+    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.1.0'
 }
 ```
 
-Remove `mavenLocal()` after using a released repository version.
+To test an unreleased source checkout, run `./gradlew publishToMavenLocal` in EventDock and temporarily add `mavenLocal()` before `mavenCentral()`.
 
 ## 2. Configure PostgreSQL and Kafka
 

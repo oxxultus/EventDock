@@ -5,10 +5,10 @@
 Add one dependency:
 
 ```gradle
-implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.1.0-SNAPSHOT'
+implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.1.0'
 ```
 
-For local development, run `./gradlew publishToMavenLocal` in EventDock and add `mavenLocal()` to the consuming build.
+The artifact is available from Maven Central. For an unreleased source checkout, run `./gradlew publishToMavenLocal` in EventDock and temporarily add `mavenLocal()` before `mavenCentral()` in the consuming build.
 
 The starter uses the application's `DataSource`, `PlatformTransactionManager`, `ObjectMapper`, and `KafkaTemplate`. It configures PostgreSQL repositories, a transaction-aware unit of work, JSON codec, Kafka publisher, inbox receiver, and scheduled processors. Every bean can be replaced by declaring an application bean of the same contract.
 

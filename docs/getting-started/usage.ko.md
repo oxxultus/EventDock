@@ -11,26 +11,19 @@
 - PostgreSQL
 - Kafka
 
-EventDock은 아직 Maven Central에 배포되지 않았습니다. 먼저 현재 checkout을 Maven Local에 배포합니다.
-
-```shell
-./gradlew publishToMavenLocal
-```
-
-사용할 애플리케이션에 Maven Local과 Starter를 추가합니다.
+사용할 애플리케이션에 Maven Central과 Starter를 추가합니다.
 
 ```gradle
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
-    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.1.0-SNAPSHOT'
+    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.1.0'
 }
 ```
 
-정식 저장소 버전을 사용하게 되면 `mavenLocal()`을 제거합니다.
+아직 배포하지 않은 source checkout을 시험하려면 EventDock에서 `./gradlew publishToMavenLocal`을 실행하고 `mavenCentral()` 앞에 `mavenLocal()`을 임시로 추가합니다.
 
 ## 2. PostgreSQL과 Kafka 설정
 

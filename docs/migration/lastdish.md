@@ -19,7 +19,7 @@ Migrate one event flow at a time. Do not switch an existing topic between the le
 
 ## Staged replacement
 
-1. Publish EventDock `0.1.0-SNAPSHOT` to Maven Local and add the starter to one service.
+1. Add EventDock `0.1.0` from Maven Central and apply the starter to one service.
 2. Apply the EventDock schema and disable the legacy Outbox/Inbox auto-configurations only in that service.
 3. Select a low-risk event and use a new topic during the transition.
 4. Replace its writer with `OutboxWriter.append(EventEnvelope<?>)` inside the existing `@Transactional` use case.
