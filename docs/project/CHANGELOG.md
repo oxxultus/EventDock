@@ -8,6 +8,10 @@ The format follows Keep a Changelog, and this project follows Semantic Versionin
 
 ## [Unreleased]
 
+### Added
+
+- Complete English and Korean implementation guides for all four reliability-mode combinations.
+
 ## [0.2.0] - 2026-09-08
 
 ### Added

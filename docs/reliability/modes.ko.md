@@ -11,6 +11,13 @@ EventDock은 생산자와 소비자의 신뢰성을 독립적으로 선택합니
 | `DIRECT` | `INBOX` | 소비자만 | 빠르게 발행하면서 소비자의 영속 중복 제거와 재시도가 필요한 경우 |
 | `DIRECT` | `DIRECT` | 없음 | 알림 또는 다시 생성할 수 있는 비핵심 이벤트 |
 
+조합별 전체 구현 가이드:
+
+- [Outbox + Inbox](outbox-inbox.ko.md)
+- [Outbox + Direct](outbox-direct.ko.md)
+- [Direct + Inbox](direct-inbox.ko.md)
+- [Direct + Direct](direct-direct.ko.md)
+
 ```mermaid
 flowchart LR
     Domain[도메인 트랜잭션]

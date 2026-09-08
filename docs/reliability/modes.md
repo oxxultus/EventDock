@@ -11,6 +11,13 @@ EventDock selects producer and consumer reliability independently. The event env
 | `DIRECT` | `INBOX` | Consumer only | Low-latency publication with durable deduplication and retries at the consumer |
 | `DIRECT` | `DIRECT` | None | Notifications or rebuildable, non-critical events |
 
+Complete implementation guides:
+
+- [Outbox + Inbox](outbox-inbox.md)
+- [Outbox + Direct](outbox-direct.md)
+- [Direct + Inbox](direct-inbox.md)
+- [Direct + Direct](direct-direct.md)
+
 ```mermaid
 flowchart LR
     Domain[Domain transaction]

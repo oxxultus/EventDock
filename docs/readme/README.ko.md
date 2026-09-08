@@ -33,6 +33,10 @@
 
 - [사용 가이드](../getting-started/usage.ko.md)
 - [신뢰성 모드](../reliability/modes.ko.md)
+  - [Outbox + Inbox](../reliability/outbox-inbox.ko.md)
+  - [Outbox + Direct](../reliability/outbox-direct.ko.md)
+  - [Direct + Inbox](../reliability/direct-inbox.ko.md)
+  - [Direct + Direct](../reliability/direct-direct.ko.md)
 - [Maven Central 배포](../releasing/maven-central.ko.md)
 - [시스템 설계](../design/system-design.ko.md)
 - [아키텍처](../architecture/architecture.ko.md)

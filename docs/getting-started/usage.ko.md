@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.1.0'
+    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.2.0'
 }
 ```
 
@@ -141,6 +141,7 @@ Inbox 처리와 handler의 데이터베이스 변경은 하나의 트랜잭션�
 
 ## 상세 문서
 
+- [4가지 신뢰성 모드 구현 가이드](../reliability/modes.ko.md)
 - [Spring Boot Starter](../spring-boot/starter.ko.md)
 - [PostgreSQL 저장소](../storage/postgresql.ko.md)
 - [Kafka 전송](../transport/kafka.ko.md)
