@@ -1,0 +1,80 @@
+name: Release to Maven Central
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maven-central-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Read and validate release version
+        id: version
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ || "$version" == *-SNAPSHOT ]]; then
+            echo "Invalid release tag: $GITHUB_REF_NAME"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Build and test release
+        run: ./gradlew clean build validateReleaseVersion -PreleaseVersion=${{ steps.version.outputs.version }} --no-daemon
+
+      - name: Stage signed Maven publications
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+        run: ./gradlew publishAllPublicationsToStagingRepository -PreleaseVersion=${{ steps.version.outputs.version }} --no-daemon
+
+      - name: Require complete signed publications
+        shell: bash
+        run: |
+          pom_count=$(find build/staging-deploy/io/github/oxxultus -name '*.pom' | wc -l | tr -d ' ')
+          signature_count=$(find build/staging-deploy/io/github/oxxultus -name '*.asc' | wc -l | tr -d ' ')
+          if [[ "$pom_count" -ne 7 || "$signature_count" -lt 28 ]]; then
+            echo "Incomplete publication: poms=$pom_count signatures=$signature_count"
+            exit 1
+          fi
+
+      - name: Publish to Maven Central
+        uses: jreleaser/release-action@90ac653bb9c79d11179e65d81499f3f34527dcd5 # v2.5.0
+        with:
+          version: '1.26.0'
+          arguments: deploy
+          setup-java: false
+        env:
+          JRELEASER_PROJECT_VERSION: ${{ steps.version.outputs.version }}
+          JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+
+      - name: Preserve JReleaser diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jreleaser-${{ steps.version.outputs.version }}
+          path: |
+            out/jreleaser/trace.log
+            out/jreleaser/output.properties
+          if-no-files-found: ignore
+          retention-days: 7
