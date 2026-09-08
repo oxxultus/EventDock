@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.3.0'
+    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.4.0'
 }
 ```
 

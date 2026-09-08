@@ -8,6 +8,8 @@ The format follows Keep a Changelog, and this project follows Semantic Versionin
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-08
+
 ### Added
 
 - `@EventDockHandler.policy` with `IDEMPOTENT` default and `LATEST_WINS` Inbox ordering support.

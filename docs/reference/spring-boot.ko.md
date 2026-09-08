@@ -5,7 +5,7 @@
 다음 의존성 하나를 추가합니다.
 
 ```gradle
-implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.3.0'
+implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.4.0'
 ```
 
 Artifact는 Maven Central에서 사용할 수 있습니다. 아직 배포하지 않은 source checkout을 시험하려면 EventDock에서 `./gradlew publishToMavenLocal`을 실행하고 사용하는 프로젝트의 `mavenCentral()` 앞에 `mavenLocal()`을 임시로 추가합니다.

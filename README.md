@@ -6,7 +6,7 @@ Framework-independent event, transactional outbox, and idempotent inbox building
 
 ## Quick start
 
-Add `io.github.oxxultus:eventdock-spring-boot-starter:0.3.0` from Maven Central, configure PostgreSQL and Kafka, then write an `EventEnvelope` through `EventWriter`. Producer and consumer reliability modes are independently configurable.
+Add `io.github.oxxultus:eventdock-spring-boot-starter:0.4.0` from Maven Central, configure PostgreSQL and Kafka, then write an `EventEnvelope` through `EventWriter`. Producer and consumer reliability modes are independently configurable.
 
 See the [quick start](docs/getting-started/quick-start.md) or [한국어 빠른 시작](docs/getting-started/quick-start.ko.md).
 
