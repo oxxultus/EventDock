@@ -52,14 +52,14 @@ If the method rolls back, both the order and Outbox row roll back. The Outbox sc
 ## Consumer
 
 ```java
-@Bean
-InboxHandlerRegistry inboxHandlers(EventCodec codec, BillingService billing) {
-  InboxHandler handler = event -> {
+@Component
+@EventDockHandler(consumerId = "billing-service", eventType = "order.created")
+final class OrderCreatedHandler implements EventHandler {
+  @Override
+  public void handle(SerializedEvent event) {
     var envelope = codec.decode(event, OrderCreated.class);
     billing.openInvoice(envelope.payload().orderId());
-  };
-  return (consumerId, eventType) ->
-      consumerId.equals("billing-service") && eventType.equals("order.created") ? handler : null;
+  }
 }
 ```
 

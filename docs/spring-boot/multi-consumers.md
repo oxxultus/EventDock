@@ -45,18 +45,19 @@ eventdock:
 - `routes[].event-type`: matches the EventDock event type header, not necessarily the Kafka topic.
 - `routes[].consumer-id`: overrides the default consumer ID for Inbox deduplication, retry claims, ordering, and handler lookup.
 
-Register handlers for the resolved consumer IDs:
+Declare the resolved consumer ID in `@EventDockHandler`. EventDock collects handler beans automatically:
 
 ```java
-@Bean
-InboxHandlerRegistry handlers(EventCodec codec, MemberService members) {
-  return (consumerId, eventType) -> switch (consumerId) {
-    case "core-order-member-created" -> event -> members.created(codec.decode(event, MemberCreated.class).payload());
-    case "core-order-member-updated" -> event -> members.updated(codec.decode(event, MemberUpdated.class).payload());
-    case "core-order-member-deleted" -> event -> members.deleted(codec.decode(event, MemberDeleted.class).payload());
-    default -> null;
-  };
+@Component
+@EventDockHandler(consumerId = "core-order-member-created", eventType = "MEMBER_CREATED")
+final class MemberCreatedHandler implements EventHandler {
+  @Override
+  public void handle(SerializedEvent event) {
+    members.created(codec.decode(event, MemberCreated.class).payload());
+  }
 }
 ```
+
+Add a handler class for each remaining event type. See [automatic handler registration](handlers.md) for complete rules.
 
 Do not combine `eventdock.consumers` with `eventdock.inbox.enabled=true`. The legacy single-listener configuration remains supported for compatibility. Setting `spring.kafka.listener.auto-startup=false` also prevents dynamic EventDock containers from starting.

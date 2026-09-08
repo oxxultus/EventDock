@@ -51,14 +51,14 @@ Rollback removes both writes; the scheduler publishes later. Consumer `DIRECT` d
 Register a transport-neutral direct handler:
 
 ```java
-@Bean
-EventHandlerRegistry directHandlers(EventCodec codec, NotificationService notifications) {
-  EventHandler handler = event -> {
+@Component
+@EventDockHandler(consumerId = "notification-service", eventType = "order.created")
+final class OrderCreatedNotificationHandler implements EventHandler {
+  @Override
+  public void handle(SerializedEvent event) {
     var envelope = codec.decode(event, OrderCreated.class);
     notifications.sendCreated(envelope.payload().orderId());
-  };
-  return (consumerId, eventType) ->
-      consumerId.equals("notification-service") && eventType.equals("order.created") ? handler : null;
+  }
 }
 ```
 

@@ -5,7 +5,7 @@
 Add one dependency:
 
 ```gradle
-implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.2.0'
+implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.3.0'
 ```
 
 The artifact is available from Maven Central. For an unreleased source checkout, run `./gradlew publishToMavenLocal` in EventDock and temporarily add `mavenLocal()` before `mavenCentral()` in the consuming build.
@@ -44,7 +44,7 @@ eventdock:
 
 ```
 
-Declare an `InboxHandlerRegistry` bean to enable inbox listening and processing. Inject `EventWriter` to select Outbox or Direct publication through configuration. The default Outbox writer joins the domain transaction, so both changes commit or roll back together. See [reliability modes](../reliability/modes.md).
+Consumer processing automatically registers `EventHandler` beans annotated with `@EventDockHandler`. Inject `EventWriter` to select Outbox or Direct publication through configuration. The default Outbox writer joins the domain transaction, so both changes commit or roll back together. See [handler registration](handlers.md) and [reliability modes](../reliability/modes.md).
 
 The `inbox.consumer-id` form above creates one legacy listener. For multiple groups, mixed modes, or event-type-specific Inbox identities, use [multiple consumer bindings](multi-consumers.md).
 

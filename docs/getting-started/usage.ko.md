@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.2.0'
+    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.3.0'
 }
 ```
 
@@ -100,30 +100,31 @@ class OrderService {
 
 기본 `OUTBOX` 생산 모드에서는 EventDock이 이벤트를 Outbox 테이블에 저장하고 비동기로 발행한 뒤 완료 또는 재시도 상태를 기록합니다. `eventdock.producer.mode`를 `DIRECT`로 바꿔도 애플리케이션 코드는 그대로 유지됩니다.
 
-## 4. Inbox handler 등록
+## 4. Handler 등록
 
-`InboxHandlerRegistry` bean 하나를 선언합니다. consumer ID와 이벤트 타입으로 handler를 찾고 `EventCodec`으로 payload를 역직렬화합니다.
+`@EventDockHandler`를 붙인 `EventHandler` bean을 선언합니다. EventDock이 consumer ID와 이벤트 타입으로 자동 등록합니다.
 
 ```java
 import io.github.oxxultus.eventdock.core.EventCodec;
-import io.github.oxxultus.eventdock.inbox.InboxHandler;
-import io.github.oxxultus.eventdock.inbox.InboxHandlerRegistry;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import io.github.oxxultus.eventdock.autoconfigure.EventDockHandler;
+import io.github.oxxultus.eventdock.core.EventHandler;
+import io.github.oxxultus.eventdock.core.SerializedEvent;
 
-@Configuration
-class EventHandlers {
-  @Bean
-  InboxHandlerRegistry inboxHandlers(EventCodec codec, BillingService billing) {
-    InboxHandler orderCreated = event -> {
-      var envelope = codec.decode(event, OrderCreated.class);
-      billing.openInvoice(envelope.payload().orderId());
-    };
+@Component
+@EventDockHandler(consumerId = "billing-service", eventType = "order.created")
+final class OrderCreatedHandler implements EventHandler {
+  private final EventCodec codec;
+  private final BillingService billing;
 
-    return (consumerId, eventType) ->
-        consumerId.equals("billing-service") && eventType.equals("order.created")
-            ? orderCreated
-            : null;
+  OrderCreatedHandler(EventCodec codec, BillingService billing) {
+    this.codec = codec;
+    this.billing = billing;
+  }
+
+  @Override
+  public void handle(SerializedEvent event) {
+    var envelope = codec.decode(event, OrderCreated.class);
+    billing.openInvoice(envelope.payload().orderId());
   }
 }
 ```
@@ -146,6 +147,7 @@ Inbox 처리와 handler의 데이터베이스 변경은 하나의 트랜잭션�
 - [4가지 신뢰성 모드 구현 가이드](../reliability/modes.ko.md)
 - [Spring Boot Starter](../spring-boot/starter.ko.md)
 - [다중 consumer binding](../spring-boot/multi-consumers.ko.md)
+- [Handler 자동 등록](../spring-boot/handlers.ko.md)
 - [PostgreSQL 저장소](../storage/postgresql.ko.md)
 - [Kafka 전송](../transport/kafka.ko.md)
 - [아키텍처](../architecture/architecture.ko.md)
