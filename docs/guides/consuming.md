@@ -78,6 +78,24 @@ Both consumer modes use the same annotation API.
 
 `eventdock.consumers[].mode`, not the handler, selects the mode. A handler can remain unchanged when the mode changes.
 
+## Inbox processing policy
+
+Omitting `policy` selects `IDEMPOTENT`.
+
+```java
+@EventDockHandler(
+    consumerId = "order-member",
+    eventType = "MEMBER_UPDATED",
+    policy = OrderingPolicy.LATEST_WINS
+)
+final class MemberUpdatedHandler implements EventHandler { /* ... */ }
+```
+
+- `IDEMPOTENT`: removes duplicate `(consumerId, eventId)` deliveries and processes every distinct event.
+- `LATEST_WINS`: also skips events at or below the last processed version for the same aggregate. Use it when only the newest synchronized state matters.
+
+`LATEST_WINS` requires stable `aggregate.type` and `aggregate.id` values plus a monotonically increasing `aggregate.version` in the envelope. Event types that share one aggregate version cursor must use the same `consumerId` and policy. `DIRECT` stores no Inbox or aggregate version, so it ignores `policy` and invokes the handler immediately.
+
 ## Startup validation and legacy API
 
 Two handlers mapped to the same `(consumerId, eventType)` fail application startup. Blank annotation attributes are rejected. An unmapped message follows the processor's existing handler-not-found failure policy.

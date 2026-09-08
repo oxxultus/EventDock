@@ -8,6 +8,10 @@ The format follows Keep a Changelog, and this project follows Semantic Versionin
 
 ## [Unreleased]
 
+### Added
+
+- `@EventDockHandler.policy` with `IDEMPOTENT` default and `LATEST_WINS` Inbox ordering support.
+
 ### Changed
 
 - Reorganized documentation into getting-started, guides, concepts, reference, operations, migration, development, and project sections.

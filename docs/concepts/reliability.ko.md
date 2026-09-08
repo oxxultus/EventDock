@@ -49,6 +49,7 @@ flowchart LR
 - Outbox는 생산자 DB와 Kafka 사이를 보호합니다.
 - Inbox는 Kafka와 소비자 DB 사이를 보호합니다.
 - Inbox 멱등성은 `(consumerId, eventId)` 범위입니다.
+- Inbox Handler는 모든 고유 이벤트를 처리하는 `IDEMPOTENT` 또는 같은 aggregate의 이전 version을 건너뛰는 `LATEST_WINS`를 선택할 수 있습니다.
 - Kafka `group-id`는 전달 범위이며 Inbox 멱등성 키가 아닙니다.
 - 어떤 모드도 여러 DB와 외부 시스템을 하나의 원자적 트랜잭션으로 묶는 분산 exactly-once를 제공하지 않습니다.
 

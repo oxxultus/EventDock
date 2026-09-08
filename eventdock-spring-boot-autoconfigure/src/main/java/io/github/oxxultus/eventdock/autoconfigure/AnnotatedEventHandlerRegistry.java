@@ -3,6 +3,7 @@ package io.github.oxxultus.eventdock.autoconfigure;
 import io.github.oxxultus.eventdock.core.EventHandler;
 import io.github.oxxultus.eventdock.inbox.InboxHandlerRegistry;
 import io.github.oxxultus.eventdock.inbox.InboxHandler;
+import io.github.oxxultus.eventdock.inbox.OrderingPolicy;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,9 @@ final class AnnotatedEventHandlerRegistry implements InboxHandlerRegistry {
             new Route(
                 required(annotation.consumerId(), "consumerId"),
                 required(annotation.eventType(), "eventType"));
-        InboxHandler existing = discovered.putIfAbsent(route, candidate::handle);
+        InboxHandler existing =
+            discovered.putIfAbsent(
+                route, new PolicyAwareInboxHandler(candidate, annotation.policy()));
         if (existing != null) {
           throw new IllegalStateException(
               "Duplicate EventDock handler for consumerId="
@@ -53,6 +56,19 @@ final class AnnotatedEventHandlerRegistry implements InboxHandlerRegistry {
     private Route {
       Objects.requireNonNull(consumerId);
       Objects.requireNonNull(eventType);
+    }
+  }
+
+  private record PolicyAwareInboxHandler(EventHandler delegate, OrderingPolicy orderingPolicy)
+      implements InboxHandler {
+    private PolicyAwareInboxHandler {
+      Objects.requireNonNull(delegate);
+      Objects.requireNonNull(orderingPolicy);
+    }
+
+    @Override
+    public void handle(io.github.oxxultus.eventdock.core.SerializedEvent event) {
+      delegate.handle(event);
     }
   }
 }

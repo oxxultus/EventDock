@@ -49,6 +49,7 @@ Neither side stores EventDock state. Minimum latency requires accepting publicat
 - Outbox protects the producer database-to-Kafka boundary.
 - Inbox protects the Kafka-to-consumer-database boundary.
 - Inbox idempotency is scoped by `(consumerId, eventId)`.
+- Inbox handlers select `IDEMPOTENT` for every distinct event or `LATEST_WINS` to skip older versions of the same aggregate.
 - Kafka `group-id` defines delivery scope and is not part of the Inbox idempotency key.
 - No mode provides distributed exactly-once across multiple databases and external systems.
 
