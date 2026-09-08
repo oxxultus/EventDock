@@ -8,10 +8,13 @@ EventDock의 주요 변경 사항을 이 파일에 기록합니다.
 
 ## [미배포]
 
+## [0.3.0] - 2026-09-08
+
 ### 추가
 
 - 독립적인 group ID, 모드, topic 및 eventType consumer route를 지원하는 다중 Kafka consumer binding을 추가했습니다.
 - 네 가지 신뢰성 모드 조합별 영문·한국어 전체 구현 가이드를 추가했습니다.
+- 반복 가능한 `@EventDockHandler` annotation 기반 Spring Boot handler 자동 등록, 중복 route 시작 검증 및 기존 Registry 호환을 추가했습니다.
 
 ## [0.2.0] - 2026-09-08
 

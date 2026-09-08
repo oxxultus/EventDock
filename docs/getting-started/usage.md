@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.2.0'
+    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.3.0'
 }
 ```
 
@@ -100,30 +100,31 @@ class OrderService {
 
 With the default `OUTBOX` producer mode, EventDock stores the event in the Outbox table, publishes it asynchronously, and records completion or retry state. Changing `eventdock.producer.mode` to `DIRECT` keeps this application code unchanged.
 
-## 4. Register an Inbox handler
+## 4. Register a handler
 
-Declare one `InboxHandlerRegistry` bean. Resolve handlers by consumer ID and event type, then decode the payload through `EventCodec`.
+Declare an `EventHandler` bean annotated with `@EventDockHandler`. EventDock registers it by consumer ID and event type.
 
 ```java
 import io.github.oxxultus.eventdock.core.EventCodec;
-import io.github.oxxultus.eventdock.inbox.InboxHandler;
-import io.github.oxxultus.eventdock.inbox.InboxHandlerRegistry;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import io.github.oxxultus.eventdock.autoconfigure.EventDockHandler;
+import io.github.oxxultus.eventdock.core.EventHandler;
+import io.github.oxxultus.eventdock.core.SerializedEvent;
 
-@Configuration
-class EventHandlers {
-  @Bean
-  InboxHandlerRegistry inboxHandlers(EventCodec codec, BillingService billing) {
-    InboxHandler orderCreated = event -> {
-      var envelope = codec.decode(event, OrderCreated.class);
-      billing.openInvoice(envelope.payload().orderId());
-    };
+@Component
+@EventDockHandler(consumerId = "billing-service", eventType = "order.created")
+final class OrderCreatedHandler implements EventHandler {
+  private final EventCodec codec;
+  private final BillingService billing;
 
-    return (consumerId, eventType) ->
-        consumerId.equals("billing-service") && eventType.equals("order.created")
-            ? orderCreated
-            : null;
+  OrderCreatedHandler(EventCodec codec, BillingService billing) {
+    this.codec = codec;
+    this.billing = billing;
+  }
+
+  @Override
+  public void handle(SerializedEvent event) {
+    var envelope = codec.decode(event, OrderCreated.class);
+    billing.openInvoice(envelope.payload().orderId());
   }
 }
 ```
@@ -146,6 +147,7 @@ Before production rollout, review the [operations runbook](../operations/runbook
 - [Four reliability-mode implementation guides](../reliability/modes.md)
 - [Spring Boot starter](../spring-boot/starter.md)
 - [Multiple consumer bindings](../spring-boot/multi-consumers.md)
+- [Automatic handler registration](../spring-boot/handlers.md)
 - [PostgreSQL storage](../storage/postgresql.md)
 - [Kafka transport](../transport/kafka.md)
 - [Architecture](../architecture/architecture.md)

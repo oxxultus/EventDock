@@ -63,7 +63,7 @@ void changeState(EventEnvelope<?> event) {
 - `OUTBOX`: `EventWriter` resolves to `OutboxWriter`; domain state and the Outbox row commit together.
 - `DIRECT`: `EventWriter` resolves to `DirectEventWriter`; the encoded event is sent immediately. A later transaction rollback cannot retract it.
 
-For an `INBOX` consumer, register `InboxHandlerRegistry`; ordering, durable deduplication, and retry policies apply. For a `DIRECT` consumer, either the same `InboxHandlerRegistry` or the transport-neutral `EventHandlerRegistry` can be registered. Direct handling uses `UnitOfWork` but has no EventDock persistence, deduplication, or durable retry state.
+With Spring Boot, register an `EventHandler` bean annotated with `@EventDockHandler` for either `INBOX` or `DIRECT`. Inbox handling applies ordering, durable deduplication, and retry policies. Direct handling uses `UnitOfWork` but has no EventDock persistence, deduplication, or durable retry state. The legacy Registry APIs remain supported. See [automatic handler registration](../spring-boot/handlers.md).
 
 ## Failure semantics
 

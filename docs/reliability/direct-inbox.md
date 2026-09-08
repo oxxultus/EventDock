@@ -49,14 +49,14 @@ class StoreService {
 ## Consumer
 
 ```java
-@Bean
-InboxHandlerRegistry inboxHandlers(EventCodec codec, SearchService search) {
-  InboxHandler handler = event -> {
+@Component
+@EventDockHandler(consumerId = "search-service", eventType = "store.changed")
+final class StoreChangedHandler implements EventHandler {
+  @Override
+  public void handle(SerializedEvent event) {
     var envelope = codec.decode(event, StoreChanged.class);
     search.reindex(envelope.payload().storeId());
-  };
-  return (consumerId, eventType) ->
-      consumerId.equals("search-service") && eventType.equals("store.changed") ? handler : null;
+  }
 }
 ```
 

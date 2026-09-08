@@ -63,7 +63,7 @@ void changeState(EventEnvelope<?> event) {
 - `OUTBOX`: `EventWriter`는 `OutboxWriter`이며 도메인 상태와 Outbox row가 함께 commit됩니다.
 - `DIRECT`: `EventWriter`는 `DirectEventWriter`이며 직렬화한 이벤트를 즉시 전송합니다. 전송 후 도메인 트랜잭션이 rollback돼도 이벤트를 회수할 수 없습니다.
 
-`INBOX` 소비자는 `InboxHandlerRegistry`를 등록하며 순서, 영속 중복 제거 및 재시도 정책이 적용됩니다. `DIRECT` 소비자는 같은 `InboxHandlerRegistry` 또는 전송 중립적인 `EventHandlerRegistry`를 등록할 수 있습니다. Direct 처리는 `UnitOfWork`를 사용하지만 EventDock 영속화, 중복 제거 및 영속 재시도 상태가 없습니다.
+Spring Boot에서는 `INBOX`와 `DIRECT` 모두 `@EventDockHandler`가 붙은 `EventHandler` bean을 등록합니다. `INBOX`에는 순서, 영속 중복 제거 및 재시도 정책이 적용됩니다. Direct 처리는 `UnitOfWork`를 사용하지만 EventDock 영속화, 중복 제거 및 영속 재시도 상태가 없습니다. 기존 Registry API도 호환됩니다. 자세한 사용법은 [Handler 자동 등록](../spring-boot/handlers.ko.md)을 확인합니다.
 
 ## 실패 의미
 

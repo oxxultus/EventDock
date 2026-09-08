@@ -45,18 +45,19 @@ eventdock:
 - `routes[].event-type`: Kafka topic이 아니라 EventDock event type header와 비교합니다.
 - `routes[].consumer-id`: Inbox 중복 제거, 재시도 claim, 순서 처리 및 handler 탐색에 사용할 consumer ID를 덮어씁니다.
 
-최종 결정되는 consumer ID에 handler를 등록합니다.
+최종 결정되는 consumer ID를 `@EventDockHandler`에 등록합니다. EventDock이 handler bean을 자동 수집합니다.
 
 ```java
-@Bean
-InboxHandlerRegistry handlers(EventCodec codec, MemberService members) {
-  return (consumerId, eventType) -> switch (consumerId) {
-    case "core-order-member-created" -> event -> members.created(codec.decode(event, MemberCreated.class).payload());
-    case "core-order-member-updated" -> event -> members.updated(codec.decode(event, MemberUpdated.class).payload());
-    case "core-order-member-deleted" -> event -> members.deleted(codec.decode(event, MemberDeleted.class).payload());
-    default -> null;
-  };
+@Component
+@EventDockHandler(consumerId = "core-order-member-created", eventType = "MEMBER_CREATED")
+final class MemberCreatedHandler implements EventHandler {
+  @Override
+  public void handle(SerializedEvent event) {
+    members.created(codec.decode(event, MemberCreated.class).payload());
+  }
 }
 ```
+
+나머지 event type도 같은 방식으로 handler class를 추가합니다. 전체 규칙은 [Handler 자동 등록](handlers.ko.md)을 확인합니다.
 
 `eventdock.consumers`와 `eventdock.inbox.enabled=true`를 함께 사용하지 않습니다. 기존 단일 listener 설정은 하위 호환을 위해 유지됩니다. `spring.kafka.listener.auto-startup=false`는 동적 EventDock container 시작도 중단합니다.

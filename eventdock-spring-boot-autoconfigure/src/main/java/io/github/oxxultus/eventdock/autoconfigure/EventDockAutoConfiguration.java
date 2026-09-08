@@ -4,6 +4,7 @@ import io.github.oxxultus.eventdock.core.EventCodec;
 import io.github.oxxultus.eventdock.core.DirectEventProcessor;
 import io.github.oxxultus.eventdock.core.DirectEventWriter;
 import io.github.oxxultus.eventdock.core.EventHandlerRegistry;
+import io.github.oxxultus.eventdock.core.EventHandler;
 import io.github.oxxultus.eventdock.core.EventPublisher;
 import io.github.oxxultus.eventdock.core.EventWriter;
 import io.github.oxxultus.eventdock.core.ExponentialBackoffRetryPolicy;
@@ -66,6 +67,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @EnableScheduling
 @EnableConfigurationProperties({EventDockProperties.class, KafkaProperties.class})
 public class EventDockAutoConfiguration {
+  @Bean
+  @ConditionalOnMissingBean(EventHandlerRegistry.class)
+  InboxHandlerRegistry eventDockAnnotatedHandlerRegistry(ObjectProvider<EventHandler> handlers) {
+    return new AnnotatedEventHandlerRegistry(handlers.orderedStream().toList());
+  }
+
   @Bean
   InitializingBean eventDockPropertiesValidator(EventDockProperties properties) {
     return properties::validate;

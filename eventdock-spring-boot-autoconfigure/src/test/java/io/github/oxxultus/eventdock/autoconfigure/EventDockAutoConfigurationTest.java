@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import io.github.oxxultus.eventdock.core.UnitOfWork;
 import io.github.oxxultus.eventdock.core.DirectEventWriter;
 import io.github.oxxultus.eventdock.core.EventPublisher;
+import io.github.oxxultus.eventdock.core.EventHandler;
 import io.github.oxxultus.eventdock.core.EventWriter;
 import io.github.oxxultus.eventdock.inbox.InboxHandlerRegistry;
 import io.github.oxxultus.eventdock.outbox.OutboxWriter;
@@ -103,6 +104,17 @@ class EventDockAutoConfigurationTest {
             });
   }
 
+  @Test
+  void autoRegistersAnnotatedHandlerWithoutCustomRegistry() {
+    runner
+        .withUserConfiguration(AnnotatedHandlers.class)
+        .run(
+            context -> {
+              var registry = context.getBean(InboxHandlerRegistry.class);
+              assertTrue(registry.get("billing-service", "order.created") != null);
+            });
+  }
+
   @Configuration(proxyBeanMethods = false)
   static class Dependencies {
     @Bean
@@ -127,5 +139,19 @@ class EventDockAutoConfigurationTest {
     InboxHandlerRegistry inboxHandlerRegistry() {
       return (consumerId, eventType) -> event -> {};
     }
+  }
+
+  @Configuration(proxyBeanMethods = false)
+  static class AnnotatedHandlers {
+    @Bean
+    AnnotatedOrderCreatedHandler annotatedOrderCreatedHandler() {
+      return new AnnotatedOrderCreatedHandler();
+    }
+  }
+
+  @EventDockHandler(consumerId = "billing-service", eventType = "order.created")
+  static final class AnnotatedOrderCreatedHandler implements EventHandler {
+    @Override
+    public void handle(io.github.oxxultus.eventdock.core.SerializedEvent event) {}
   }
 }

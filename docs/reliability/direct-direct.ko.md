@@ -47,14 +47,14 @@ class AnalyticsProducer {
 Direct handler를 등록합니다.
 
 ```java
-@Bean
-EventHandlerRegistry directHandlers(EventCodec codec, AnalyticsService analytics) {
-  EventHandler handler = event -> {
+@Component
+@EventDockHandler(consumerId = "analytics-service", eventType = "page.viewed")
+final class PageViewedHandler implements EventHandler {
+  @Override
+  public void handle(SerializedEvent event) {
     var envelope = codec.decode(event, PageViewed.class);
     analytics.record(envelope.payload());
-  };
-  return (consumerId, eventType) ->
-      consumerId.equals("analytics-service") && eventType.equals("page.viewed") ? handler : null;
+  }
 }
 ```
 
