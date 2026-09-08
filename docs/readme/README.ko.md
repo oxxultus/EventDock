@@ -43,6 +43,7 @@
 - [PostgreSQL 저장소](../storage/postgresql.ko.md)
 - [Kafka 전송](../transport/kafka.ko.md)
 - [Spring Boot starter](../spring-boot/starter.ko.md)
+- [다중 consumer binding](../spring-boot/multi-consumers.ko.md)
 - [운영 Runbook](../operations/runbook.ko.md)
 - [LastDish 전환](../migration/lastdish.ko.md)
 - [기여 컨벤션](../project/CONTRIBUTING.ko.md)

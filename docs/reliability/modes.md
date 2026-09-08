@@ -44,7 +44,7 @@ eventdock:
     mode: inbox
 ```
 
-Change either value independently. Consumer identity, topics, and processing switches remain under `eventdock.inbox` for compatibility with 0.1.x configuration.
+Change either value independently for the legacy single listener. For multiple listeners, each entry under `eventdock.consumers` owns its mode, topics, Kafka group, and optional event-type routes. See [multiple consumer bindings](../spring-boot/multi-consumers.md).
 
 ## Application contracts
 

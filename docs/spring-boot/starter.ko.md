@@ -5,7 +5,7 @@
 다음 의존성 하나를 추가합니다.
 
 ```gradle
-implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.1.0'
+implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.2.0'
 ```
 
 Artifact는 Maven Central에서 사용할 수 있습니다. 아직 배포하지 않은 source checkout을 시험하려면 EventDock에서 `./gradlew publishToMavenLocal`을 실행하고 사용하는 프로젝트의 `mavenCentral()` 앞에 `mavenLocal()`을 임시로 추가합니다.
@@ -45,6 +45,8 @@ eventdock:
 ```
 
 Inbox 수신과 처리를 활성화하려면 `InboxHandlerRegistry` bean을 선언합니다. 설정으로 Outbox 또는 Direct 발행을 선택하려면 `EventWriter`를 주입합니다. 기본 Outbox Writer는 도메인 트랜잭션에 참여하므로 두 변경은 함께 commit되거나 rollback됩니다. 자세한 내용은 [신뢰성 모드](../reliability/modes.ko.md)를 확인합니다.
+
+위 `inbox.consumer-id` 방식은 기존 단일 listener 하나를 생성합니다. 여러 group, 혼합 모드 또는 eventType별 Inbox 식별자가 필요하면 [다중 consumer binding](multi-consumers.ko.md)을 사용합니다.
 
 Starter는 byte-array 전용 Kafka producer 및 consumer factory를 생성합니다. 애플리케이션의 기존 `KafkaTemplate`과 JSON listener factory는 변경하지 않습니다.
 

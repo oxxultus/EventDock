@@ -15,6 +15,7 @@ public class EventDockProperties {
   private final Consumer consumer = new Consumer();
   private final Retry retry = new Retry();
   private final Cleanup cleanup = new Cleanup();
+  private List<ConsumerBinding> consumers = new ArrayList<>();
   private Duration publishTimeout = Duration.ofSeconds(10);
 
   public Processing getOutbox() { return outbox; }
@@ -23,6 +24,8 @@ public class EventDockProperties {
   public Consumer getConsumer() { return consumer; }
   public Retry getRetry() { return retry; }
   public Cleanup getCleanup() { return cleanup; }
+  public List<ConsumerBinding> getConsumers() { return consumers; }
+  public void setConsumers(List<ConsumerBinding> value) { consumers = value; }
   public Duration getPublishTimeout() { return publishTimeout; }
   public void setPublishTimeout(Duration value) { publishTimeout = value; }
 
@@ -65,6 +68,55 @@ public class EventDockProperties {
     public void setConsumerId(String value) { consumerId = value; }
     public List<String> getTopics() { return topics; }
     public void setTopics(List<String> value) { topics = value; }
+  }
+
+  public static final class ConsumerBinding {
+    private String id;
+    private ConsumerMode mode = ConsumerMode.INBOX;
+    private List<String> topics = new ArrayList<>();
+    private final Kafka kafka = new Kafka();
+    private List<Route> routes = new ArrayList<>();
+
+    public String getId() { return id; }
+    public void setId(String value) { id = value; }
+    public ConsumerMode getMode() { return mode; }
+    public void setMode(ConsumerMode value) { mode = value; }
+    public List<String> getTopics() { return topics; }
+    public void setTopics(List<String> value) { topics = value; }
+    public Kafka getKafka() { return kafka; }
+    public List<Route> getRoutes() { return routes; }
+    public void setRoutes(List<Route> value) { routes = value; }
+
+    public String groupId() {
+      return kafka.getGroupId() == null || kafka.getGroupId().isBlank()
+          ? id
+          : kafka.getGroupId();
+    }
+
+    public String consumerId(String eventType) {
+      return routes.stream()
+          .filter(route -> route.getEventType().equals(eventType))
+          .map(Route::getConsumerId)
+          .findFirst()
+          .orElse(id);
+    }
+  }
+
+  public static final class Kafka {
+    private String groupId;
+
+    public String getGroupId() { return groupId; }
+    public void setGroupId(String value) { groupId = value; }
+  }
+
+  public static final class Route {
+    private String eventType;
+    private String consumerId;
+
+    public String getEventType() { return eventType; }
+    public void setEventType(String value) { eventType = value; }
+    public String getConsumerId() { return consumerId; }
+    public void setConsumerId(String value) { consumerId = value; }
   }
 
   public static final class Retry {
@@ -132,6 +184,55 @@ public class EventDockProperties {
       }
       positive("inbox.batch-size", inbox.getBatchSize());
       positive("inbox.poll-interval", inbox.getPollInterval());
+    }
+    validateConsumers();
+  }
+
+  private void validateConsumers() {
+    if (consumers == null) {
+      throw new IllegalStateException("eventdock.consumers must not be null");
+    }
+    if (!consumers.isEmpty()
+        && (inbox.isEnabled()
+            || (inbox.getConsumerId() != null && !inbox.getConsumerId().isBlank())
+            || (inbox.getTopics() != null && !inbox.getTopics().isEmpty()))) {
+      throw new IllegalStateException(
+          "eventdock.consumers cannot be combined with legacy eventdock.inbox consumer settings");
+    }
+    var ids = new java.util.HashSet<String>();
+    for (int index = 0; index < consumers.size(); index++) {
+      ConsumerBinding binding = consumers.get(index);
+      String prefix = "eventdock.consumers[" + index + "]";
+      required(prefix + ".id", binding.getId());
+      if (!ids.add(binding.getId())) {
+        throw new IllegalStateException("duplicate eventdock consumer id: " + binding.getId());
+      }
+      if (binding.getMode() == null) {
+        throw new IllegalStateException(prefix + ".mode must not be null");
+      }
+      if (binding.getTopics() == null || binding.getTopics().isEmpty()) {
+        throw new IllegalStateException(prefix + ".topics is required");
+      }
+      binding.getTopics().forEach(topic -> required(prefix + ".topics", topic));
+      required(prefix + ".kafka.group-id", binding.groupId());
+      if (binding.getRoutes() == null) {
+        throw new IllegalStateException(prefix + ".routes must not be null");
+      }
+      var eventTypes = new java.util.HashSet<String>();
+      for (Route route : binding.getRoutes()) {
+        required(prefix + ".routes.event-type", route.getEventType());
+        required(prefix + ".routes.consumer-id", route.getConsumerId());
+        if (!eventTypes.add(route.getEventType())) {
+          throw new IllegalStateException(
+              "duplicate route event-type in " + binding.getId() + ": " + route.getEventType());
+        }
+      }
+    }
+  }
+
+  private void required(String name, String value) {
+    if (value == null || value.isBlank()) {
+      throw new IllegalStateException(name + " must not be blank");
     }
   }
 

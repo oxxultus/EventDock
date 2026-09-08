@@ -9,3 +9,19 @@
 발행은 broker 응답을 기다립니다. 전송 실패나 timeout이 발생하면 Outbox 재시도 정책이 동작합니다. 전달 방식은 at-least-once이므로 consumer는 멱등성을 위해 Inbox 경로를 사용해야 합니다.
 
 수신 record는 Kafka listener가 반환되기 전에 Inbox에 저장됩니다. Starter가 기존 JSON Kafka 흐름과 분리된 `ByteArraySerializer` 및 `ByteArrayDeserializer` 전용 factory를 제공합니다.
+
+## Consumer binding
+
+Spring Boot 어댑터는 `eventdock.consumers` 항목마다 listener container 하나를 생성합니다. Kafka `group-id`는 partition 분배를 결정하고, 최종 EventDock `consumer-id`는 Inbox 식별자와 handler 탐색을 결정합니다. 하나의 Kafka group 안에서도 event type route로 consumer 식별자를 덮어쓸 수 있습니다.
+
+```mermaid
+flowchart LR
+    G[Kafka group] --> L[Binding listener]
+    L --> R{Event type route}
+    R -->|member.created| C1[consumer: member-created]
+    R -->|member.updated| C2[consumer: member-updated]
+    C1 --> I1[(Inbox identity)]
+    C2 --> I2[(Inbox identity)]
+```
+
+설정과 handler 예제는 [다중 consumer binding](../spring-boot/multi-consumers.ko.md)을 확인합니다.

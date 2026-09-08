@@ -32,6 +32,7 @@ import javax.sql.DataSource;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -248,8 +249,83 @@ public class EventDockAutoConfiguration {
   }
 
   @Configuration(proxyBeanMethods = false)
+  @ConditionalOnProperty(name = "eventdock.consumers[0].id")
+  @ConditionalOnBean(EventHandlerRegistry.class)
+  static class MultiConsumerConfiguration {
+    @Bean
+    ConcurrentKafkaListenerContainerFactory<String, byte[]>
+        eventDockKafkaListenerContainerFactory(KafkaProperties properties) {
+      var consumerFactory =
+          new DefaultKafkaConsumerFactory<>(
+              properties.buildConsumerProperties(),
+              new StringDeserializer(),
+              new ByteArrayDeserializer());
+      var factory = new ConcurrentKafkaListenerContainerFactory<String, byte[]>();
+      factory.setConsumerFactory(consumerFactory);
+      return factory;
+    }
+
+    @Bean
+    @ConditionalOnBean(InboxHandlerRegistry.class)
+    @ConditionalOnMissingBean
+    InboxProcessor eventDockInboxProcessor(
+        @Qualifier("eventDockInboxRepository") InboxRepository repository,
+        InboxHandlerRegistry handlers,
+        @Qualifier("eventDockAggregateVersionRepository") AggregateVersionRepository versions,
+        RetryPolicy retry,
+        Clock clock,
+        UnitOfWork unitOfWork,
+        InboxExhaustionHandler exhaustionHandler) {
+      return new InboxProcessor(
+          repository,
+          handlers,
+          versions,
+          retry,
+          clock,
+          unitOfWork,
+          exhaustionHandler);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    DirectEventProcessor eventDockDirectEventProcessor(
+        EventHandlerRegistry handlers, UnitOfWork unitOfWork) {
+      return new DirectEventProcessor(handlers, unitOfWork);
+    }
+
+    @Bean
+    EventDockKafkaConsumerManager eventDockKafkaConsumerManager(
+        EventDockProperties properties,
+        KafkaProperties kafkaProperties,
+        ConcurrentKafkaListenerContainerFactory<String, byte[]> factory,
+        KafkaEventRecordMapper mapper,
+        @Qualifier("eventDockInboxRepository") InboxRepository repository,
+        Clock clock,
+        ObjectProvider<InboxProcessor> inboxProcessor,
+        ObjectProvider<DirectEventProcessor> directProcessor) {
+      return new EventDockKafkaConsumerManager(
+          properties.getConsumers(),
+          factory,
+          mapper,
+          repository,
+          clock,
+          inboxProcessor.getIfAvailable(),
+          directProcessor.getIfAvailable(),
+          kafkaProperties.getListener().isAutoStartup());
+    }
+
+    @Bean
+    @ConditionalOnBean(InboxProcessor.class)
+    EventDockMultiInboxScheduler eventDockMultiInboxScheduler(
+        InboxProcessor processor, EventDockProperties properties, EventDockMetrics metrics) {
+      return new EventDockMultiInboxScheduler(processor, properties, metrics);
+    }
+  }
+
+  @Configuration(proxyBeanMethods = false)
   @EnableKafka
   @ConditionalOnBean(InboxHandlerRegistry.class)
+  @ConditionalOnExpression("'${eventdock.consumers[0].id:}'.isEmpty()")
   @ConditionalOnProperty(name = {"eventdock.inbox.consumer-id", "eventdock.inbox.topics"})
   @ConditionalOnProperty(
       name = "eventdock.consumer.mode",
@@ -318,6 +394,7 @@ public class EventDockAutoConfiguration {
   @Configuration(proxyBeanMethods = false)
   @EnableKafka
   @ConditionalOnBean(EventHandlerRegistry.class)
+  @ConditionalOnExpression("'${eventdock.consumers[0].id:}'.isEmpty()")
   @ConditionalOnProperty(name = {"eventdock.inbox.consumer-id", "eventdock.inbox.topics"})
   @ConditionalOnProperty(
       name = "eventdock.inbox.enabled",

@@ -54,6 +54,8 @@ eventdock:
 
 The event type is the default Kafka topic. Create each configured topic before starting the service when Kafka topic auto-creation is disabled.
 
+This is the legacy single-listener form. Applications with multiple listeners should use [multiple consumer bindings](../spring-boot/multi-consumers.md), which separates Kafka `group-id` from EventDock `consumer-id` and supports event-type routes.
+
 ## 3. Publish with the domain transaction
 
 Create the domain data and append its event in one Spring transaction. A rollback then removes both changes.
@@ -143,6 +145,7 @@ Before production rollout, review the [operations runbook](../operations/runbook
 
 - [Four reliability-mode implementation guides](../reliability/modes.md)
 - [Spring Boot starter](../spring-boot/starter.md)
+- [Multiple consumer bindings](../spring-boot/multi-consumers.md)
 - [PostgreSQL storage](../storage/postgresql.md)
 - [Kafka transport](../transport/kafka.md)
 - [Architecture](../architecture/architecture.md)
