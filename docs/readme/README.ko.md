@@ -27,6 +27,7 @@
 
 ## 문서
 
+- [시스템 설계](../design/system-design.ko.md)
 - [아키텍처](../architecture/architecture.ko.md)
 - [기여 컨벤션](../project/CONTRIBUTING.ko.md)
 - [변경 이력](../project/CHANGELOG.ko.md)
