@@ -1,0 +1,26 @@
+plugins {
+    id 'org.springframework.boot' version '4.1.0' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+}
+
+group = 'io.github.oxxultus'
+version = '0.1.0-SNAPSHOT'
+
+subprojects {
+    group = rootProject.group
+    version = rootProject.version
+
+    plugins.withId('java-library') {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(21)
+            }
+            withSourcesJar()
+            withJavadocJar()
+        }
+
+        tasks.withType(Test).configureEach {
+            useJUnitPlatform()
+        }
+    }
+}

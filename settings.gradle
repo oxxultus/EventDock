@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'EventDock'
+
+include 'eventdock-core'
+include 'eventdock-outbox'
+include 'eventdock-inbox'
+include 'eventdock-storage-postgresql'
+include 'eventdock-transport-kafka'
+include 'eventdock-spring-boot-autoconfigure'
+include 'eventdock-spring-boot-starter'

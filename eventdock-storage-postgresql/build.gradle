@@ -1,0 +1,11 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api project(':eventdock-outbox')
+    api project(':eventdock-inbox')
+    implementation 'org.postgresql:postgresql:42.7.8'
+    testImplementation platform('org.junit:junit-bom:6.0.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
