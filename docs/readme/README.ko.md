@@ -32,6 +32,7 @@
 ## 문서
 
 - [사용 가이드](../getting-started/usage.ko.md)
+- [Maven Central 배포](../releasing/maven-central.ko.md)
 - [시스템 설계](../design/system-design.ko.md)
 - [아키텍처](../architecture/architecture.ko.md)
 - [PostgreSQL 저장소](../storage/postgresql.ko.md)

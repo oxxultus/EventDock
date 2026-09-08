@@ -18,3 +18,4 @@ The format follows Keep a Changelog, and this project follows Semantic Versionin
 - Kafka header-based wire mapping, publisher, and durable inbox receiver.
 - Spring Boot auto-configuration, scheduled processors, JSON codec, and Maven-local publication.
 - Production cleanup, validation, exhaustion hooks, Micrometer metrics, health details, and failure-path integration coverage.
+- Tag-driven, signed Maven Central publication through the Central Publisher Portal.

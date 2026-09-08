@@ -32,6 +32,7 @@ Framework-independent processing, PostgreSQL storage, Kafka transport, and Sprin
 ## Documentation
 
 - [Usage guide](../getting-started/usage.md)
+- [Maven Central release](../releasing/maven-central.md)
 - [System design](../design/system-design.md)
 - [Architecture](../architecture/architecture.md)
 - [PostgreSQL storage](../storage/postgresql.md)
