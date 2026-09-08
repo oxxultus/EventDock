@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.1.0'
+    implementation 'io.github.oxxultus:eventdock-spring-boot-starter:0.2.0'
 }
 ```
 
@@ -141,6 +141,7 @@ Before production rollout, review the [operations runbook](../operations/runbook
 
 ## More configuration
 
+- [Four reliability-mode implementation guides](../reliability/modes.md)
 - [Spring Boot starter](../spring-boot/starter.md)
 - [PostgreSQL storage](../storage/postgresql.md)
 - [Kafka transport](../transport/kafka.md)

@@ -33,6 +33,10 @@ Framework-independent processing, PostgreSQL storage, Kafka transport, and Sprin
 
 - [Usage guide](../getting-started/usage.md)
 - [Reliability modes](../reliability/modes.md)
+  - [Outbox + Inbox](../reliability/outbox-inbox.md)
+  - [Outbox + Direct](../reliability/outbox-direct.md)
+  - [Direct + Inbox](../reliability/direct-inbox.md)
+  - [Direct + Direct](../reliability/direct-direct.md)
 - [Maven Central release](../releasing/maven-central.md)
 - [System design](../design/system-design.md)
 - [Architecture](../architecture/architecture.md)
