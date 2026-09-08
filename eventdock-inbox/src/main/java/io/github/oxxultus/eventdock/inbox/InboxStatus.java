@@ -4,5 +4,6 @@ public enum InboxStatus {
   RECEIVED,
   PROCESSING,
   PROCESSED,
+  SKIPPED,
   FAILED
 }
