@@ -17,7 +17,39 @@ eventdock:
     topics: order.created
 ```
 
-Call `EventWriter.write(...)` in the domain `@Transactional` method, using the [producer example](../getting-started/usage.md#3-publish-with-the-domain-transaction).
+## Producer
+
+Inject the mode-neutral `EventWriter`. In `OUTBOX` mode, `write` appends the event in the current database transaction.
+
+```java
+@Service
+class OrderService {
+  private final OrderRepository orders;
+  private final EventWriter events;
+
+  OrderService(OrderRepository orders, EventWriter events) {
+    this.orders = orders;
+    this.events = events;
+  }
+
+  @Transactional
+  void create(long orderId, long memberId) {
+    orders.save(new Order(orderId, memberId));
+    events.write(new EventEnvelope<>(
+        EventId.random(),
+        "order.created",
+        1,
+        new AggregateRef("order", Long.toString(orderId), 1),
+        Instant.now(),
+        new OrderCreated(orderId, memberId),
+        Map.of("producer", "order-service")));
+  }
+}
+```
+
+If the method rolls back, both the order and Outbox row roll back. The Outbox scheduler publishes after commit; do not call Kafka directly here.
+
+## Consumer
 
 ```java
 @Bean

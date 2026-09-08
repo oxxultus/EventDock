@@ -17,7 +17,34 @@ eventdock:
     topics: page.viewed
 ```
 
-`inbox.enabled`는 direct listener를 활성화하지만 Inbox row를 만들지는 않습니다. `EventWriter`로 발행하고 direct handler를 등록합니다.
+`inbox.enabled`는 direct listener를 활성화하지만 Inbox row를 만들지는 않습니다.
+
+## 생산자
+
+```java
+@Service
+class AnalyticsProducer {
+  private final EventWriter events;
+
+  AnalyticsProducer(EventWriter events) {
+    this.events = events;
+  }
+
+  void pageViewed(long memberId, String path) {
+    events.write(new EventEnvelope<>(
+        EventId.random(), "page.viewed", 1,
+        new AggregateRef("member", Long.toString(memberId), 0),
+        Instant.now(), new PageViewed(memberId, path),
+        Map.of("producer", "web-service")));
+  }
+}
+```
+
+이 예제에는 도메인 트랜잭션이 없습니다. `write`는 즉시 발행하고 발행 실패 시 예외를 던지며 EventDock은 재시도 상태를 저장하지 않습니다.
+
+## 소비자
+
+Direct handler를 등록합니다.
 
 ```java
 @Bean

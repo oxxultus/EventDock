@@ -17,7 +17,36 @@ eventdock:
     topics: store.changed
 ```
 
-Inject `EventWriter`; it resolves to `DirectEventWriter`. Publication can occur before the domain transaction commits.
+## Producer
+
+The same `EventWriter` API resolves to `DirectEventWriter` and publishes synchronously.
+
+```java
+@Service
+class StoreService {
+  private final StoreRepository stores;
+  private final EventWriter events;
+
+  StoreService(StoreRepository stores, EventWriter events) {
+    this.stores = stores;
+    this.events = events;
+  }
+
+  @Transactional
+  void change(long storeId, long version) {
+    stores.change(storeId);
+    events.write(new EventEnvelope<>(
+        EventId.random(), "store.changed", 1,
+        new AggregateRef("store", Long.toString(storeId), version),
+        Instant.now(), new StoreChanged(storeId),
+        Map.of("producer", "store-service")));
+  }
+}
+```
+
+`write` returning means transport publication completed, not that the database transaction committed. A publish failure throws to the caller; a later rollback cannot retract an already-published event.
+
+## Consumer
 
 ```java
 @Bean
