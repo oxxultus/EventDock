@@ -189,7 +189,7 @@ Replay는 명시적인 관리 작업입니다. 이벤트 ID를 유지하고 작�
 - Kafka 전송은 Aggregate 식별자를 기본 key로 사용해 `SerializedEvent`를 발행합니다.
 - JSON 지원은 core에 포함하지 않고 별도 codec으로 구현합니다.
 - Spring Boot 자동설정은 애플리케이션이 port 구현체를 제공하면 적용되지 않습니다.
-- 데이터베이스 마이그레이션은 버전이 지정된 resource로 제공하며 core 모듈이 자동 적용하지 않습니다.
+- 데이터베이스 마이그레이션은 버전이 지정된 resource로 제공합니다. Starter는 기본적으로 멱등 DDL을 적용하며 외부 마이그레이션 도구에 소유권을 맡길 수도 있습니다.
 
 ## 13. 미결정 사항
 
@@ -197,7 +197,6 @@ Replay는 명시적인 관리 작업입니다. 이벤트 ID를 유지하고 작�
 - Aggregate version gap 발견 시 strict ordering 동작
 - 재시도 backoff 기본값과 오류 정보 최대 보존 범위
 - PostgreSQL 테이블 및 schema 이름 사용자 설정 방식
-- `0.1.0`에서 JSON codec을 별도 모듈로 제공할지 Starter에 포함할지
 - 공개 replay 및 운영 관리 API의 경계
 
 각 어댑터를 안정 버전으로 선언하기 전에 관련 결정을 확정해야 합니다.
