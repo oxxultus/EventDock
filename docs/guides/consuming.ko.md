@@ -1,6 +1,6 @@
-# Spring Boot Handler 등록
+# Spring Boot 이벤트 소비
 
-[English](handlers.md) | [한국어](handlers.ko.md)
+[English](consuming.md) | [한국어](consuming.ko.md)
 
 Spring Boot Starter는 `@EventDockHandler`가 붙은 `EventHandler` bean을 자동 수집합니다. 애플리케이션은 Kafka listener나 `InboxHandlerRegistry`를 직접 만들 필요가 없습니다.
 

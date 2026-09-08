@@ -1,6 +1,6 @@
-# Spring Boot Handler Registration
+# Consuming Events with Spring Boot
 
-[English](handlers.md) | [한국어](handlers.ko.md)
+[English](consuming.md) | [한국어](consuming.ko.md)
 
 The Spring Boot Starter automatically collects `EventHandler` beans annotated with `@EventDockHandler`. Applications do not need to create Kafka listeners or an `InboxHandlerRegistry`.
 

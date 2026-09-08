@@ -1,6 +1,6 @@
-# Spring Boot Starter
+# Spring Boot Configuration Reference
 
-[English](starter.md) | [한국어](starter.ko.md)
+[English](spring-boot.md) | [한국어](spring-boot.ko.md)
 
 Add one dependency:
 
@@ -44,9 +44,9 @@ eventdock:
 
 ```
 
-Consumer processing automatically registers `EventHandler` beans annotated with `@EventDockHandler`. Inject `EventWriter` to select Outbox or Direct publication through configuration. The default Outbox writer joins the domain transaction, so both changes commit or roll back together. See [handler registration](handlers.md) and [reliability modes](../reliability/modes.md).
+Consumer processing automatically registers `EventHandler` beans annotated with `@EventDockHandler`. Inject `EventWriter` to select Outbox or Direct publication through configuration. The default Outbox writer joins the domain transaction, so both changes commit or roll back together. See [handler registration](../guides/consuming.md) and [reliability modes](../concepts/reliability.md).
 
-The `inbox.consumer-id` form above creates one legacy listener. For multiple groups, mixed modes, or event-type-specific Inbox identities, use [multiple consumer bindings](multi-consumers.md).
+The `inbox.consumer-id` form above creates one legacy listener. For multiple groups, mixed modes, or event-type-specific Inbox identities, use [multiple consumer bindings](../guides/multiple-consumers.md).
 
 The starter creates dedicated byte-array Kafka producer and consumer factories. Existing application `KafkaTemplate` and JSON listener factories remain unchanged.
 

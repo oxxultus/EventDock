@@ -1,6 +1,6 @@
-# Usage guide
+# Quick Start
 
-[English](usage.md) | [한국어](usage.ko.md)
+[English](quick-start.md) | [한국어](quick-start.ko.md)
 
 This guide uses the Spring Boot starter. For framework-independent integration, depend on the required core, inbox, outbox, storage, and transport modules and wire their ports directly.
 
@@ -54,7 +54,7 @@ eventdock:
 
 The event type is the default Kafka topic. Create each configured topic before starting the service when Kafka topic auto-creation is disabled.
 
-This is the legacy single-listener form. Applications with multiple listeners should use [multiple consumer bindings](../spring-boot/multi-consumers.md), which separates Kafka `group-id` from EventDock `consumer-id` and supports event-type routes.
+This is the legacy single-listener form. Applications with multiple listeners should use [multiple consumer bindings](../guides/multiple-consumers.md), which separates Kafka `group-id` from EventDock `consumer-id` and supports event-type routes.
 
 ## 3. Publish with the domain transaction
 
@@ -144,10 +144,10 @@ Before production rollout, review the [operations runbook](../operations/runbook
 
 ## More configuration
 
-- [Four reliability-mode implementation guides](../reliability/modes.md)
-- [Spring Boot starter](../spring-boot/starter.md)
-- [Multiple consumer bindings](../spring-boot/multi-consumers.md)
-- [Automatic handler registration](../spring-boot/handlers.md)
-- [PostgreSQL storage](../storage/postgresql.md)
-- [Kafka transport](../transport/kafka.md)
-- [Architecture](../architecture/architecture.md)
+- [Four reliability-mode implementation guides](../concepts/reliability.md)
+- [Spring Boot starter](../reference/spring-boot.md)
+- [Multiple consumer bindings](../guides/multiple-consumers.md)
+- [Automatic handler registration](../guides/consuming.md)
+- [PostgreSQL storage](../reference/postgresql.md)
+- [Kafka transport](../reference/kafka.md)
+- [Architecture](../development/architecture.md)

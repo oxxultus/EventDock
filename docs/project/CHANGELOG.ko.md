@@ -8,6 +8,11 @@ EventDock의 주요 변경 사항을 이 파일에 기록합니다.
 
 ## [미배포]
 
+### 변경
+
+- 문서를 getting-started, guides, concepts, reference, operations, migration, development 및 project 영역으로 재구성했습니다.
+- 신뢰성 문서를 통합하고 Kafka group, EventDock consumer 식별, 공유 DB 및 Inbox 멱등성 경계를 문서화했습니다.
+
 ## [0.3.0] - 2026-09-08
 
 ### 추가

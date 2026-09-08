@@ -1,6 +1,6 @@
-# Spring Boot Starter
+# Spring Boot 설정 명세
 
-[English](starter.md) | [한국어](starter.ko.md)
+[English](spring-boot.md) | [한국어](spring-boot.ko.md)
 
 다음 의존성 하나를 추가합니다.
 
@@ -44,9 +44,9 @@ eventdock:
 
 ```
 
-소비 처리는 `@EventDockHandler`가 붙은 `EventHandler` bean을 자동 등록합니다. 설정으로 Outbox 또는 Direct 발행을 선택하려면 `EventWriter`를 주입합니다. 기본 Outbox Writer는 도메인 트랜잭션에 참여하므로 두 변경은 함께 commit되거나 rollback됩니다. [Handler 등록](handlers.ko.md)과 [신뢰성 모드](../reliability/modes.ko.md)를 확인합니다.
+소비 처리는 `@EventDockHandler`가 붙은 `EventHandler` bean을 자동 등록합니다. 설정으로 Outbox 또는 Direct 발행을 선택하려면 `EventWriter`를 주입합니다. 기본 Outbox Writer는 도메인 트랜잭션에 참여하므로 두 변경은 함께 commit되거나 rollback됩니다. [Handler 등록](../guides/consuming.ko.md)과 [신뢰성 모드](../concepts/reliability.ko.md)를 확인합니다.
 
-위 `inbox.consumer-id` 방식은 기존 단일 listener 하나를 생성합니다. 여러 group, 혼합 모드 또는 eventType별 Inbox 식별자가 필요하면 [다중 consumer binding](multi-consumers.ko.md)을 사용합니다.
+위 `inbox.consumer-id` 방식은 기존 단일 listener 하나를 생성합니다. 여러 group, 혼합 모드 또는 eventType별 Inbox 식별자가 필요하면 [다중 consumer binding](../guides/multiple-consumers.ko.md)을 사용합니다.
 
 Starter는 byte-array 전용 Kafka producer 및 consumer factory를 생성합니다. 애플리케이션의 기존 `KafkaTemplate`과 JSON listener factory는 변경하지 않습니다.
 
