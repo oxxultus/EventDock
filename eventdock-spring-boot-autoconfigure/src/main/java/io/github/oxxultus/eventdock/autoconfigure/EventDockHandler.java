@@ -1,5 +1,6 @@
 package io.github.oxxultus.eventdock.autoconfigure;
 
+import io.github.oxxultus.eventdock.inbox.OrderingPolicy;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Repeatable;
@@ -26,4 +27,11 @@ public @interface EventDockHandler {
    * @return exact, case-sensitive event type
    */
   String eventType();
+
+  /**
+   * Selects Inbox ordering behavior. Direct consumers invoke the handler without applying it.
+   *
+   * @return Inbox ordering policy
+   */
+  OrderingPolicy policy() default OrderingPolicy.IDEMPOTENT;
 }

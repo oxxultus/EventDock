@@ -8,6 +8,10 @@ EventDock의 주요 변경 사항을 이 파일에 기록합니다.
 
 ## [미배포]
 
+### 추가
+
+- 기본값 `IDEMPOTENT`와 Inbox `LATEST_WINS` 순서 처리를 지원하는 `@EventDockHandler.policy`를 추가했습니다.
+
 ### 변경
 
 - 문서를 getting-started, guides, concepts, reference, operations, migration, development 및 project 영역으로 재구성했습니다.

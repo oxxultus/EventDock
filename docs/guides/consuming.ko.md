@@ -78,6 +78,24 @@ final class OrderAuditHandler implements EventHandler { /* ... */ }
 
 모드는 handler가 아니라 `eventdock.consumers[].mode`가 결정합니다. handler를 바꾸지 않고 모드를 전환할 수 있습니다.
 
+## Inbox 처리 정책
+
+`policy`를 생략하면 `IDEMPOTENT`입니다.
+
+```java
+@EventDockHandler(
+    consumerId = "order-member",
+    eventType = "MEMBER_UPDATED",
+    policy = OrderingPolicy.LATEST_WINS
+)
+final class MemberUpdatedHandler implements EventHandler { /* ... */ }
+```
+
+- `IDEMPOTENT`: `(consumerId, eventId)` 중복만 제거하고 도착한 서로 다른 이벤트를 모두 처리합니다.
+- `LATEST_WINS`: 중복 제거에 더해 같은 aggregate의 이미 처리한 version 이하 이벤트를 건너뜁니다. 상태 동기화처럼 최신 값만 의미가 있을 때 사용합니다.
+
+`LATEST_WINS`를 사용하려면 envelope에 같은 aggregate를 식별하는 `aggregate.type`, `aggregate.id`와 단조 증가하는 `aggregate.version`이 있어야 합니다. 서로 다른 event type이 같은 aggregate 최신 version을 공유해야 한다면 같은 `consumerId`와 정책을 지정합니다. `DIRECT` 모드는 Inbox와 aggregate version을 저장하지 않으므로 `policy`를 적용하지 않고 Handler를 즉시 실행합니다.
+
 ## 시작 시 검증과 기존 API
 
 같은 `(consumerId, eventType)`을 handler 두 개에 등록하면 애플리케이션 시작이 실패합니다. annotation의 빈 값도 허용하지 않습니다. 매핑되지 않은 메시지는 기존 processor의 handler-not-found 실패 정책을 따릅니다.
