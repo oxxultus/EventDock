@@ -8,6 +8,8 @@ The format follows Keep a Changelog, and this project follows Semantic Versionin
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-09-08
+
 ### Added
 
 - Initial multi-module architecture and framework-independent event contracts.
