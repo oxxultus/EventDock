@@ -4,6 +4,10 @@
 
 프레임워크에 독립적인 이벤트 계약과 Transactional Outbox, 멱등성 Inbox를 제공하는 라이브러리입니다.
 
+## 빠른 시작
+
+[사용 가이드](../getting-started/usage.ko.md)에서 Starter 설치, PostgreSQL·Kafka 설정, 트랜잭션 이벤트 발행 및 Inbox handler 등록 방법을 확인할 수 있습니다.
+
 ## 모듈
 
 - `eventdock-core`: 이벤트 메시지 규격과 전송 기술에 독립적인 계약
@@ -27,6 +31,7 @@
 
 ## 문서
 
+- [사용 가이드](../getting-started/usage.ko.md)
 - [시스템 설계](../design/system-design.ko.md)
 - [아키텍처](../architecture/architecture.ko.md)
 - [PostgreSQL 저장소](../storage/postgresql.ko.md)
