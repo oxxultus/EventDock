@@ -43,7 +43,7 @@ Java packages use `io.github.oxxultus.eventdock.<area>`.
 - Create branches from current `main`.
 - Use `feature/<issue>-<short-name>`, `fix/<issue>-<short-name>`, `refactor/<issue>-<short-name>`, or `docs/<issue>-<short-name>`.
 - Keep one objective per issue, branch, and pull request.
-- Merge through a pull request after CI passes and at least one review.
+- Merge through a pull request after required CI checks pass. Maintainers may merge their own pull requests without review.
 - Prefer squash merge; delete the branch after merge.
 
 Commit format:
