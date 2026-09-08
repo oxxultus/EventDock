@@ -11,3 +11,4 @@ The format follows Keep a Changelog, and this project follows Semantic Versionin
 ### Added
 
 - Initial multi-module architecture and framework-independent event contracts.
+- English and Korean system design documents with architecture, processing, and lifecycle diagrams.

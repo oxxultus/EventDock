@@ -27,6 +27,7 @@ The project is an API-first scaffold. Storage SQL, transaction integration, Kafk
 
 ## Documentation
 
+- [System design](docs/design/system-design.md)
 - [Architecture](docs/architecture/architecture.md)
 - [Contribution conventions](CONTRIBUTING.md)
 - [Changelog](docs/project/CHANGELOG.md)
