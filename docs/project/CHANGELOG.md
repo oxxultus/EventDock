@@ -17,3 +17,4 @@ The format follows Keep a Changelog, and this project follows Semantic Versionin
 - JDBC-based PostgreSQL outbox, inbox, aggregate-version, migration, and cleanup support.
 - Kafka header-based wire mapping, publisher, and durable inbox receiver.
 - Spring Boot auto-configuration, scheduled processors, JSON codec, and Maven-local publication.
+- Production cleanup, validation, exhaustion hooks, Micrometer metrics, health details, and failure-path integration coverage.

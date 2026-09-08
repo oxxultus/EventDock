@@ -10,10 +10,12 @@ import io.github.oxxultus.eventdock.inbox.InboxExhaustionHandler;
 import io.github.oxxultus.eventdock.inbox.InboxHandlerRegistry;
 import io.github.oxxultus.eventdock.inbox.InboxProcessor;
 import io.github.oxxultus.eventdock.inbox.InboxRepository;
+import io.github.oxxultus.eventdock.inbox.InboxCleanupRepository;
 import io.github.oxxultus.eventdock.outbox.OutboxExhaustionHandler;
 import io.github.oxxultus.eventdock.outbox.OutboxProcessor;
 import io.github.oxxultus.eventdock.outbox.OutboxRepository;
 import io.github.oxxultus.eventdock.outbox.OutboxWriter;
+import io.github.oxxultus.eventdock.outbox.OutboxCleanupRepository;
 import io.github.oxxultus.eventdock.storage.postgresql.PostgresqlStorage;
 import io.github.oxxultus.eventdock.transport.kafka.KafkaEventPublisher;
 import io.github.oxxultus.eventdock.transport.kafka.KafkaEventRecordMapper;
@@ -47,16 +49,42 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.boot.health.contributor.HealthIndicator;
 import tools.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @AutoConfiguration
 @EnableScheduling
 @EnableConfigurationProperties({EventDockProperties.class, KafkaProperties.class})
 public class EventDockAutoConfiguration {
   @Bean
+  InitializingBean eventDockPropertiesValidator(EventDockProperties properties) {
+    return properties::validate;
+  }
+
+  @Bean
   @ConditionalOnMissingBean
   Clock eventDockClock() {
     return Clock.systemUTC();
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  EventDockMetrics eventDockMetrics(ObjectProvider<MeterRegistry> registry) {
+    MeterRegistry available = registry.getIfAvailable();
+    return available == null ? EventDockMetrics.noOp() : new MicrometerEventDockMetrics(available);
+  }
+
+  @Configuration(proxyBeanMethods = false)
+  @ConditionalOnClass(HealthIndicator.class)
+  static class HealthConfiguration {
+    @Bean("eventDockHealthIndicator")
+    @ConditionalOnMissingBean(name = "eventDockHealthIndicator")
+    HealthIndicator eventDockHealthIndicator(DataSource dataSource) {
+      return new EventDockHealthIndicator(dataSource);
+    }
   }
 
   @Bean
@@ -92,6 +120,18 @@ public class EventDockAutoConfiguration {
   @ConditionalOnMissingBean
   AggregateVersionRepository eventDockAggregateVersionRepository(PostgresqlStorage storage) {
     return storage.inboxRepository();
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  OutboxExhaustionHandler eventDockOutboxExhaustionHandler() {
+    return OutboxExhaustionHandler.noOp();
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  InboxExhaustionHandler eventDockInboxExhaustionHandler() {
+    return InboxExhaustionHandler.noOp();
   }
 
   @Bean
@@ -163,9 +203,10 @@ public class EventDockAutoConfiguration {
       EventPublisher publisher,
       RetryPolicy retry,
       Clock clock,
-      UnitOfWork unitOfWork) {
+      UnitOfWork unitOfWork,
+      OutboxExhaustionHandler exhaustionHandler) {
     return new OutboxProcessor(
-        repository, publisher, retry, clock, unitOfWork, OutboxExhaustionHandler.noOp());
+        repository, publisher, retry, clock, unitOfWork, exhaustionHandler);
   }
 
   @Bean
@@ -175,8 +216,22 @@ public class EventDockAutoConfiguration {
       havingValue = "true",
       matchIfMissing = true)
   EventDockOutboxScheduler eventDockOutboxScheduler(
-      OutboxProcessor processor, EventDockProperties properties) {
-    return new EventDockOutboxScheduler(processor, properties);
+      OutboxProcessor processor, EventDockProperties properties, EventDockMetrics metrics) {
+    return new EventDockOutboxScheduler(processor, properties, metrics);
+  }
+
+  @Bean
+  @ConditionalOnProperty(
+      name = "eventdock.cleanup.enabled",
+      havingValue = "true",
+      matchIfMissing = true)
+  EventDockCleanupScheduler eventDockCleanupScheduler(
+      @Qualifier("eventDockOutboxRepository") OutboxCleanupRepository outbox,
+      @Qualifier("eventDockInboxRepository") InboxCleanupRepository inbox,
+      EventDockProperties properties,
+      Clock clock,
+      EventDockMetrics metrics) {
+    return new EventDockCleanupScheduler(outbox, inbox, properties, clock, metrics);
   }
 
   @Configuration(proxyBeanMethods = false)
@@ -205,7 +260,8 @@ public class EventDockAutoConfiguration {
         AggregateVersionRepository versions,
         RetryPolicy retry,
         Clock clock,
-        UnitOfWork unitOfWork) {
+        UnitOfWork unitOfWork,
+        InboxExhaustionHandler exhaustionHandler) {
       return new InboxProcessor(
           repository,
           handlers,
@@ -213,7 +269,7 @@ public class EventDockAutoConfiguration {
           retry,
           clock,
           unitOfWork,
-          InboxExhaustionHandler.noOp());
+          exhaustionHandler);
     }
 
     @Bean
@@ -237,8 +293,8 @@ public class EventDockAutoConfiguration {
         havingValue = "true",
         matchIfMissing = true)
     EventDockInboxScheduler eventDockInboxScheduler(
-        InboxProcessor processor, EventDockProperties properties) {
-      return new EventDockInboxScheduler(processor, properties);
+        InboxProcessor processor, EventDockProperties properties, EventDockMetrics metrics) {
+      return new EventDockInboxScheduler(processor, properties, metrics);
     }
   }
 }

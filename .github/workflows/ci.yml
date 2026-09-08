@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+      - name: Build and test
+        run: ./gradlew clean build --no-daemon
+      - name: Require integration tests
+        run: |
+          if grep -R 'skipped="[1-9]' eventdock-*/build/test-results/test/TEST-*IntegrationTest.xml; then
+            echo 'Integration tests were skipped on CI'
+            exit 1
+          fi
+      - name: Verify publication
+        run: ./gradlew publishToMavenLocal --no-daemon

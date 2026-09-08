@@ -12,6 +12,7 @@ subprojects {
 
     plugins.withId('java-library') {
         apply plugin: 'maven-publish'
+        apply plugin: 'signing'
 
         java {
             toolchain {
@@ -29,7 +30,40 @@ subprojects {
             publications {
                 mavenJava(MavenPublication) {
                     from components.java
+                    pom {
+                        name = project.name
+                        description = 'Framework-independent transactional outbox and idempotent inbox toolkit'
+                        url = 'https://github.com/oxxultus/EventDock'
+                        licenses {
+                            license {
+                                name = 'MIT License'
+                                url = 'https://opensource.org/licenses/MIT'
+                                distribution = 'repo'
+                            }
+                        }
+                        developers {
+                            developer {
+                                id = 'oxxultus'
+                                name = 'oxxultus'
+                                url = 'https://github.com/oxxultus'
+                            }
+                        }
+                        scm {
+                            connection = 'scm:git:https://github.com/oxxultus/EventDock.git'
+                            developerConnection = 'scm:git:ssh://git@github.com/oxxultus/EventDock.git'
+                            url = 'https://github.com/oxxultus/EventDock'
+                        }
+                    }
                 }
+            }
+        }
+
+        signing {
+            def signingKey = findProperty('signingKey')
+            def signingPassword = findProperty('signingPassword')
+            if (signingKey) {
+                useInMemoryPgpKeys(signingKey, signingPassword)
+                sign publishing.publications.mavenJava
             }
         }
     }

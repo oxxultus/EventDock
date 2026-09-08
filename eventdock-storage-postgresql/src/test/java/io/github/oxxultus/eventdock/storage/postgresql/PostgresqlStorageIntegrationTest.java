@@ -18,6 +18,8 @@ import java.sql.Statement;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -144,6 +146,49 @@ class PostgresqlStorageIntegrationTest {
             .execute(() -> repository.getOrCreateAndLock(key, Instant.EPOCH.plusSeconds(2)));
 
     assertEquals(5, stored);
+  }
+
+  @Test
+  void concurrentWorkersClaimAnEventOnlyOnce() throws Exception {
+    storage.outboxRepository().append(event("concurrent-1", 1));
+    var start = new CountDownLatch(1);
+    var claimAt = Instant.now().plusSeconds(5);
+
+    try (var workers = Executors.newFixedThreadPool(2)) {
+      var first =
+          workers.submit(
+              () -> {
+                start.await();
+                return storage.outboxRepository().claim(1, claimAt, Duration.ofMinutes(1)).size();
+              });
+      var second =
+          workers.submit(
+              () -> {
+                start.await();
+                return storage.outboxRepository().claim(1, claimAt, Duration.ofMinutes(1)).size();
+              });
+      start.countDown();
+
+      assertEquals(1, first.get() + second.get());
+    }
+  }
+
+  @Test
+  void cleanupDeletesOnlyCompletedRecordsBeforeRetentionBoundary() {
+    var old = Instant.parse("2026-01-01T00:00:00Z");
+    var future = Instant.parse("2099-01-01T00:00:00Z");
+    var outbox = event("cleanup-outbox", 1);
+    var inbox = event("cleanup-inbox", 1);
+    storage.outboxRepository().append(outbox);
+    storage.outboxRepository().claim(1, future, Duration.ofMinutes(1));
+    storage.outboxRepository().markPublished(outbox.id(), old);
+    storage.inboxRepository().receive("consumer", inbox, old);
+    storage.inboxRepository().claim("consumer", 1, old.plusSeconds(1), Duration.ofMinutes(1));
+    storage.inboxRepository().markProcessed("consumer", inbox.id(), old.plusSeconds(2));
+    storage.outboxRepository().append(event("pending-outbox", 1));
+
+    assertEquals(1, storage.outboxRepository().deletePublishedBefore(future, 100));
+    assertEquals(1, storage.inboxRepository().deleteCompletedBefore(future, 100));
   }
 
   private static SerializedEvent event(String id, long version) {

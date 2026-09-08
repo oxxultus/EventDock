@@ -10,6 +10,7 @@ import io.github.oxxultus.eventdock.inbox.AggregateKey;
 import io.github.oxxultus.eventdock.inbox.AggregateVersionRepository;
 import io.github.oxxultus.eventdock.inbox.InboxEntry;
 import io.github.oxxultus.eventdock.inbox.InboxRepository;
+import io.github.oxxultus.eventdock.inbox.InboxCleanupRepository;
 import io.github.oxxultus.eventdock.inbox.InboxStatus;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 public final class PostgresqlInboxRepository
-    implements InboxRepository, AggregateVersionRepository {
+    implements InboxRepository, AggregateVersionRepository, InboxCleanupRepository {
   private static final String RECEIVE_SQL =
       """
       INSERT INTO eventdock.inbox_events (
@@ -216,6 +217,7 @@ public final class PostgresqlInboxRepository
         });
   }
 
+  @Override
   public int deleteCompletedBefore(Instant processedBefore, int limit) {
     Objects.requireNonNull(processedBefore, "processedBefore must not be null");
     if (limit < 1) {

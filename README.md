@@ -32,6 +32,7 @@ Framework-independent processing, PostgreSQL storage, Kafka transport, and Sprin
 - [PostgreSQL storage](docs/storage/postgresql.md)
 - [Kafka transport](docs/transport/kafka.md)
 - [Spring Boot starter](docs/spring-boot/starter.md)
+- [Operations runbook](docs/operations/runbook.md)
 - [LastDish migration](docs/migration/lastdish.md)
 - [Contribution conventions](CONTRIBUTING.md)
 - [Changelog](docs/project/CHANGELOG.md)

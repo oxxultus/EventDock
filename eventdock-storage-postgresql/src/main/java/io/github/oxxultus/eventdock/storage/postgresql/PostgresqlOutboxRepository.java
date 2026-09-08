@@ -8,6 +8,7 @@ import io.github.oxxultus.eventdock.core.EventId;
 import io.github.oxxultus.eventdock.core.SerializedEvent;
 import io.github.oxxultus.eventdock.outbox.OutboxEntry;
 import io.github.oxxultus.eventdock.outbox.OutboxRepository;
+import io.github.oxxultus.eventdock.outbox.OutboxCleanupRepository;
 import io.github.oxxultus.eventdock.outbox.OutboxStatus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class PostgresqlOutboxRepository implements OutboxRepository {
+public final class PostgresqlOutboxRepository implements OutboxRepository, OutboxCleanupRepository {
   private static final String APPEND_SQL =
       """
       INSERT INTO eventdock.outbox_events (
@@ -130,6 +131,7 @@ public final class PostgresqlOutboxRepository implements OutboxRepository {
         });
   }
 
+  @Override
   public int deletePublishedBefore(Instant publishedBefore, int limit) {
     Objects.requireNonNull(publishedBefore, "publishedBefore must not be null");
     if (limit < 1) {
