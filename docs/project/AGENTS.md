@@ -2,7 +2,7 @@
 
 [English](AGENTS.md) | [한국어](AGENTS.ko.md)
 
-- Follow `CONTRIBUTING.md` for every change.
+- Follow the root `../../CONTRIBUTING.md` for every change.
 - Preserve the inward dependency rule and keep core modules framework-independent.
 - Do not add a dependency to a core module without checking that it is technology-neutral and essential.
 - Add or update focused tests with behavior changes.
