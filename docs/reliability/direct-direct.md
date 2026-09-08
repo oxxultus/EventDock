@@ -17,7 +17,34 @@ eventdock:
     topics: page.viewed
 ```
 
-`inbox.enabled` enables the direct listener; it does not create Inbox rows. Publish through `EventWriter` and register a direct handler:
+`inbox.enabled` enables the direct listener; it does not create Inbox rows.
+
+## Producer
+
+```java
+@Service
+class AnalyticsProducer {
+  private final EventWriter events;
+
+  AnalyticsProducer(EventWriter events) {
+    this.events = events;
+  }
+
+  void pageViewed(long memberId, String path) {
+    events.write(new EventEnvelope<>(
+        EventId.random(), "page.viewed", 1,
+        new AggregateRef("member", Long.toString(memberId), 0),
+        Instant.now(), new PageViewed(memberId, path),
+        Map.of("producer", "web-service")));
+  }
+}
+```
+
+This example has no domain transaction. `write` publishes immediately and throws on publication failure; EventDock stores no retry state.
+
+## Consumer
+
+Register a direct handler:
 
 ```java
 @Bean

@@ -17,7 +17,39 @@ eventdock:
     topics: order.created
 ```
 
-도메인 `@Transactional` 메서드에서 [생산자 예제](../getting-started/usage.ko.md#3-도메인-트랜잭션에서-이벤트-발행)처럼 `EventWriter.write(...)`를 호출합니다.
+## 생산자
+
+모드 중립적인 `EventWriter`를 주입합니다. `OUTBOX` 모드의 `write`는 현재 데이터베이스 트랜잭션에 이벤트를 추가합니다.
+
+```java
+@Service
+class OrderService {
+  private final OrderRepository orders;
+  private final EventWriter events;
+
+  OrderService(OrderRepository orders, EventWriter events) {
+    this.orders = orders;
+    this.events = events;
+  }
+
+  @Transactional
+  void create(long orderId, long memberId) {
+    orders.save(new Order(orderId, memberId));
+    events.write(new EventEnvelope<>(
+        EventId.random(),
+        "order.created",
+        1,
+        new AggregateRef("order", Long.toString(orderId), 1),
+        Instant.now(),
+        new OrderCreated(orderId, memberId),
+        Map.of("producer", "order-service")));
+  }
+}
+```
+
+메서드가 rollback되면 주문과 Outbox row가 함께 rollback됩니다. Outbox scheduler가 commit 후 발행하므로 여기서 Kafka를 직접 호출하지 않습니다.
+
+## 소비자
 
 ```java
 @Bean

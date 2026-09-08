@@ -17,7 +17,36 @@ eventdock:
     topics: store.changed
 ```
 
-`EventWriter`를 주입하면 `DirectEventWriter`가 선택됩니다. 도메인 트랜잭션 commit 전에 발행될 수 있습니다.
+## 생산자
+
+동일한 `EventWriter` API에 `DirectEventWriter`가 선택되어 동기 발행합니다.
+
+```java
+@Service
+class StoreService {
+  private final StoreRepository stores;
+  private final EventWriter events;
+
+  StoreService(StoreRepository stores, EventWriter events) {
+    this.stores = stores;
+    this.events = events;
+  }
+
+  @Transactional
+  void change(long storeId, long version) {
+    stores.change(storeId);
+    events.write(new EventEnvelope<>(
+        EventId.random(), "store.changed", 1,
+        new AggregateRef("store", Long.toString(storeId), version),
+        Instant.now(), new StoreChanged(storeId),
+        Map.of("producer", "store-service")));
+  }
+}
+```
+
+`write` 반환은 전송 완료를 뜻하며 DB 트랜잭션 commit을 뜻하지 않습니다. 발행 실패는 호출자에게 예외로 전달되지만 이후 rollback이 이미 발행된 이벤트를 회수하지는 못합니다.
+
+## 소비자
 
 ```java
 @Bean

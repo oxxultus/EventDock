@@ -17,7 +17,38 @@ eventdock:
     topics: order.created
 ```
 
-Publish through `EventWriter` in the domain transaction. Register a transport-neutral direct handler:
+## Producer
+
+The producer implementation is identical across consumer modes. In `OUTBOX` mode, the selected `EventWriter` persists inside the transaction.
+
+```java
+@Service
+class OrderService {
+  private final OrderRepository orders;
+  private final EventWriter events;
+
+  OrderService(OrderRepository orders, EventWriter events) {
+    this.orders = orders;
+    this.events = events;
+  }
+
+  @Transactional
+  void create(long orderId, long memberId) {
+    orders.save(new Order(orderId, memberId));
+    events.write(new EventEnvelope<>(
+        EventId.random(), "order.created", 1,
+        new AggregateRef("order", Long.toString(orderId), 1),
+        Instant.now(), new OrderCreated(orderId, memberId),
+        Map.of("producer", "order-service")));
+  }
+}
+```
+
+Rollback removes both writes; the scheduler publishes later. Consumer `DIRECT` does not change producer code.
+
+## Consumer
+
+Register a transport-neutral direct handler:
 
 ```java
 @Bean

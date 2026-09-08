@@ -17,7 +17,38 @@ eventdock:
     topics: order.created
 ```
 
-도메인 트랜잭션에서 `EventWriter`로 발행하고 전송 중립적인 direct handler를 등록합니다.
+## 생산자
+
+소비자 모드와 관계없이 생산자 구현은 같습니다. `OUTBOX` 모드에서 선택된 `EventWriter`가 트랜잭션 안에 저장합니다.
+
+```java
+@Service
+class OrderService {
+  private final OrderRepository orders;
+  private final EventWriter events;
+
+  OrderService(OrderRepository orders, EventWriter events) {
+    this.orders = orders;
+    this.events = events;
+  }
+
+  @Transactional
+  void create(long orderId, long memberId) {
+    orders.save(new Order(orderId, memberId));
+    events.write(new EventEnvelope<>(
+        EventId.random(), "order.created", 1,
+        new AggregateRef("order", Long.toString(orderId), 1),
+        Instant.now(), new OrderCreated(orderId, memberId),
+        Map.of("producer", "order-service")));
+  }
+}
+```
+
+Rollback되면 두 저장이 함께 취소되고 scheduler가 나중에 발행합니다. 소비자 `DIRECT`는 생산자 코드를 바꾸지 않습니다.
+
+## 소비자
+
+전송 중립적인 direct handler를 등록합니다.
 
 ```java
 @Bean
