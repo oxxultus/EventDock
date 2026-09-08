@@ -25,4 +25,8 @@ Dependencies point inward: framework and technology adapters depend on core modu
 
 The project is an API-first scaffold. Storage SQL, transaction integration, Kafka mapping, auto-configuration, migrations, and production tests will be implemented incrementally.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for architecture, development, Git, and release conventions.
+## Documentation
+
+- [Architecture](../architecture/architecture.md)
+- [Contribution conventions](../../CONTRIBUTING.md)
+- [Changelog](../project/CHANGELOG.md)

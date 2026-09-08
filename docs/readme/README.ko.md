@@ -25,4 +25,8 @@
 
 현재는 API 우선 설계를 위한 초기 골격입니다. 저장소 SQL, 트랜잭션 연동, Kafka 메시지 변환, 자동설정, 마이그레이션 및 운영 환경 테스트를 단계적으로 구현합니다.
 
-아키텍처, 개발, Git 및 릴리스 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
+## 문서
+
+- [아키텍처](../architecture/architecture.ko.md)
+- [기여 컨벤션](../project/CONTRIBUTING.ko.md)
+- [변경 이력](../project/CHANGELOG.ko.md)

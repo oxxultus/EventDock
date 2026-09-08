@@ -1,6 +1,6 @@
 # EventDock
 
-[English](README.en.md) | [한국어](README.ko.md)
+[English](docs/readme/README.en.md) | [한국어](docs/readme/README.ko.md)
 
 Framework-independent event, transactional outbox, and idempotent inbox building blocks.
 
@@ -25,4 +25,8 @@ Dependencies point inward: framework and technology adapters depend on core modu
 
 The project is an API-first scaffold. Storage SQL, transaction integration, Kafka mapping, auto-configuration, migrations, and production tests will be implemented incrementally.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for architecture, development, Git, and release conventions.
+## Documentation
+
+- [Architecture](docs/architecture/architecture.md)
+- [Contribution conventions](CONTRIBUTING.md)
+- [Changelog](docs/project/CHANGELOG.md)

@@ -1,6 +1,6 @@
 # EventDock 기여 컨벤션
 
-[English](CONTRIBUTING.md) | [한국어](CONTRIBUTING.ko.md)
+[English](../../CONTRIBUTING.md) | [한국어](CONTRIBUTING.ko.md)
 
 ## 아키텍처
 

@@ -1,6 +1,6 @@
 # EventDock contribution conventions
 
-[English](CONTRIBUTING.md) | [한국어](CONTRIBUTING.ko.md)
+[English](CONTRIBUTING.md) | [한국어](docs/project/CONTRIBUTING.ko.md)
 
 ## Architecture
 
