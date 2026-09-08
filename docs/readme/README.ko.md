@@ -6,7 +6,7 @@
 
 ## 빠른 시작
 
-[사용 가이드](../getting-started/usage.ko.md)에서 Starter 설치, PostgreSQL·Kafka 설정, 트랜잭션 이벤트 발행 및 Inbox handler 등록 방법을 확인할 수 있습니다.
+[빠른 시작](../getting-started/quick-start.ko.md)에서 Starter 설치, PostgreSQL·Kafka 설정, 트랜잭션 이벤트 발행 및 Handler 등록 방법을 확인할 수 있습니다.
 
 ## 모듈
 
@@ -31,21 +31,10 @@
 
 ## 문서
 
-- [사용 가이드](../getting-started/usage.ko.md)
-- [신뢰성 모드](../reliability/modes.ko.md)
-  - [Outbox + Inbox](../reliability/outbox-inbox.ko.md)
-  - [Outbox + Direct](../reliability/outbox-direct.ko.md)
-  - [Direct + Inbox](../reliability/direct-inbox.ko.md)
-  - [Direct + Direct](../reliability/direct-direct.ko.md)
-- [Maven Central 배포](../releasing/maven-central.ko.md)
-- [시스템 설계](../design/system-design.ko.md)
-- [아키텍처](../architecture/architecture.ko.md)
-- [PostgreSQL 저장소](../storage/postgresql.ko.md)
-- [Kafka 전송](../transport/kafka.ko.md)
-- [Spring Boot starter](../spring-boot/starter.ko.md)
-- [Spring Boot Handler 등록](../spring-boot/handlers.ko.md)
-- [다중 consumer binding](../spring-boot/multi-consumers.ko.md)
-- [운영 Runbook](../operations/runbook.ko.md)
-- [LastDish 전환](../migration/lastdish.ko.md)
-- [기여 컨벤션](../project/CONTRIBUTING.ko.md)
-- [변경 이력](../project/CHANGELOG.ko.md)
+- 시작: [빠른 시작](../getting-started/quick-start.ko.md)
+- 구현: [이벤트 소비](../guides/consuming.ko.md), [다중 Consumer](../guides/multiple-consumers.ko.md)
+- 이해: [신뢰성](../concepts/reliability.ko.md), [Consumer 식별과 멱등성](../concepts/consumer-identity.ko.md)
+- 설정: [Spring Boot](../reference/spring-boot.ko.md), [Kafka](../reference/kafka.ko.md), [PostgreSQL](../reference/postgresql.ko.md)
+- 운영: [Runbook](../operations/runbook.ko.md), [LastDish 전환](../migration/lastdish.ko.md)
+- 개발: [아키텍처](../development/architecture.ko.md), [시스템 설계](../development/system-design.ko.md), [Maven Central 배포](../development/maven-central.ko.md)
+- 프로젝트: [기여 컨벤션](../project/CONTRIBUTING.ko.md), [변경 이력](../project/CHANGELOG.ko.md)

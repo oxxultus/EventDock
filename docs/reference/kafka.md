@@ -24,4 +24,4 @@ flowchart LR
     C2 --> I2[(Inbox identity)]
 ```
 
-See [multiple consumer bindings](../spring-boot/multi-consumers.md) for configuration and handler examples.
+See [multiple consumer bindings](../guides/multiple-consumers.md) for configuration and handler examples.

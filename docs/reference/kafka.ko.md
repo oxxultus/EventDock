@@ -24,4 +24,4 @@ flowchart LR
     C2 --> I2[(Inbox identity)]
 ```
 
-설정과 handler 예제는 [다중 consumer binding](../spring-boot/multi-consumers.ko.md)을 확인합니다.
+설정과 handler 예제는 [다중 consumer binding](../guides/multiple-consumers.ko.md)을 확인합니다.

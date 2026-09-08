@@ -6,7 +6,7 @@ Framework-independent event, transactional outbox, and idempotent inbox building
 
 ## Quick start
 
-Use the [usage guide](../getting-started/usage.md) to install the starter, configure PostgreSQL and Kafka, publish an event transactionally, and register an Inbox handler.
+Use the [quick start](../getting-started/quick-start.md) to install the starter, configure PostgreSQL and Kafka, publish an event transactionally, and register a handler.
 
 ## Modules
 
@@ -31,21 +31,10 @@ Framework-independent processing, PostgreSQL storage, Kafka transport, and Sprin
 
 ## Documentation
 
-- [Usage guide](../getting-started/usage.md)
-- [Reliability modes](../reliability/modes.md)
-  - [Outbox + Inbox](../reliability/outbox-inbox.md)
-  - [Outbox + Direct](../reliability/outbox-direct.md)
-  - [Direct + Inbox](../reliability/direct-inbox.md)
-  - [Direct + Direct](../reliability/direct-direct.md)
-- [Maven Central release](../releasing/maven-central.md)
-- [System design](../design/system-design.md)
-- [Architecture](../architecture/architecture.md)
-- [PostgreSQL storage](../storage/postgresql.md)
-- [Kafka transport](../transport/kafka.md)
-- [Spring Boot starter](../spring-boot/starter.md)
-- [Spring Boot handler registration](../spring-boot/handlers.md)
-- [Multiple consumer bindings](../spring-boot/multi-consumers.md)
-- [Operations runbook](../operations/runbook.md)
-- [LastDish migration](../migration/lastdish.md)
-- [Contribution conventions](../../CONTRIBUTING.md)
-- [Changelog](../project/CHANGELOG.md)
+- Start: [Quick start](../getting-started/quick-start.md)
+- Build: [Consuming events](../guides/consuming.md), [Multiple consumers](../guides/multiple-consumers.md)
+- Understand: [Reliability](../concepts/reliability.md), [Consumer identity and idempotency](../concepts/consumer-identity.md)
+- Configure: [Spring Boot](../reference/spring-boot.md), [Kafka](../reference/kafka.md), [PostgreSQL](../reference/postgresql.md)
+- Operate: [Runbook](../operations/runbook.md), [LastDish migration](../migration/lastdish.md)
+- Develop: [Architecture](../development/architecture.md), [System design](../development/system-design.md), [Maven Central release](../development/maven-central.md)
+- Project: [Contribution conventions](../../CONTRIBUTING.md), [Changelog](../project/CHANGELOG.md)

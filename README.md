@@ -8,7 +8,7 @@ Framework-independent event, transactional outbox, and idempotent inbox building
 
 Add `io.github.oxxultus:eventdock-spring-boot-starter:0.3.0` from Maven Central, configure PostgreSQL and Kafka, then write an `EventEnvelope` through `EventWriter`. Producer and consumer reliability modes are independently configurable.
 
-See the complete [usage guide](docs/getting-started/usage.md) or [한국어 사용 가이드](docs/getting-started/usage.ko.md).
+See the [quick start](docs/getting-started/quick-start.md) or [한국어 빠른 시작](docs/getting-started/quick-start.ko.md).
 
 ## Modules
 
@@ -33,16 +33,10 @@ Framework-independent processing, PostgreSQL storage, Kafka transport, and Sprin
 
 ## Documentation
 
-- [Usage guide](docs/getting-started/usage.md)
-- [Reliability modes](docs/reliability/modes.md)
-- [Maven Central release](docs/releasing/maven-central.md)
-- [System design](docs/design/system-design.md)
-- [Architecture](docs/architecture/architecture.md)
-- [PostgreSQL storage](docs/storage/postgresql.md)
-- [Kafka transport](docs/transport/kafka.md)
-- [Spring Boot starter](docs/spring-boot/starter.md)
-- [Spring Boot handler registration](docs/spring-boot/handlers.md) ([한국어](docs/spring-boot/handlers.ko.md))
-- [Operations runbook](docs/operations/runbook.md)
-- [LastDish migration](docs/migration/lastdish.md)
-- [Contribution conventions](CONTRIBUTING.md)
-- [Changelog](docs/project/CHANGELOG.md)
+- Start: [Quick start](docs/getting-started/quick-start.md)
+- Build: [Consuming events](docs/guides/consuming.md), [Multiple consumers](docs/guides/multiple-consumers.md)
+- Understand: [Reliability](docs/concepts/reliability.md), [Consumer identity and idempotency](docs/concepts/consumer-identity.md)
+- Configure: [Spring Boot](docs/reference/spring-boot.md), [Kafka](docs/reference/kafka.md), [PostgreSQL](docs/reference/postgresql.md)
+- Operate: [Runbook](docs/operations/runbook.md), [LastDish migration](docs/migration/lastdish.md)
+- Develop: [Architecture](docs/development/architecture.md), [System design](docs/development/system-design.md), [Maven Central release](docs/development/maven-central.md)
+- Project: [Contribution conventions](CONTRIBUTING.md), [Changelog](docs/project/CHANGELOG.md)

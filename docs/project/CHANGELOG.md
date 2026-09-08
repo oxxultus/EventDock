@@ -8,6 +8,11 @@ The format follows Keep a Changelog, and this project follows Semantic Versionin
 
 ## [Unreleased]
 
+### Changed
+
+- Reorganized documentation into getting-started, guides, concepts, reference, operations, migration, development, and project sections.
+- Consolidated reliability guidance and documented Kafka group, EventDock consumer identity, shared-database, and Inbox idempotency boundaries.
+
 ## [0.3.0] - 2026-09-08
 
 ### Added

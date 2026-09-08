@@ -1,6 +1,6 @@
 # 다중 consumer binding
 
-[English](multi-consumers.md) | [한국어](multi-consumers.ko.md)
+[English](multiple-consumers.md) | [한국어](multiple-consumers.ko.md)
 
 하나의 애플리케이션이 Kafka listener 여러 개를 가질 때 `eventdock.consumers`를 사용합니다. 각 binding은 Kafka group, topic, `INBOX` 또는 `DIRECT` 처리 모드를 독립적으로 선택합니다.
 
@@ -58,6 +58,6 @@ final class MemberCreatedHandler implements EventHandler {
 }
 ```
 
-나머지 event type도 같은 방식으로 handler class를 추가합니다. 전체 규칙은 [Handler 자동 등록](handlers.ko.md)을 확인합니다.
+나머지 event type도 같은 방식으로 handler class를 추가합니다. 전체 규칙은 [Handler 자동 등록](consuming.ko.md)을 확인합니다.
 
 `eventdock.consumers`와 `eventdock.inbox.enabled=true`를 함께 사용하지 않습니다. 기존 단일 listener 설정은 하위 호환을 위해 유지됩니다. `spring.kafka.listener.auto-startup=false`는 동적 EventDock container 시작도 중단합니다.
